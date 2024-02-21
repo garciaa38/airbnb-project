@@ -9,7 +9,8 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 
 const router = express.Router();
-
+//GET ALL SPOTS --- NOT COMPLETE
+//--- Still need to add AVGRATING and PREVIEWIMAGE to Spots table
 router.get(
     '/',
     async (req, res) => {
@@ -19,6 +20,8 @@ router.get(
     }
 )
 
+//GET ALL SPOTS OWNED BY CURRENT USER --- NOT COMPLETE
+//--- Still need to add AVGRATING and PREVIEWIMAGE to Spots table
 router.get(
     '/current',
     requireAuth,
@@ -35,6 +38,9 @@ router.get(
     }
 )
 
+
+//GET ALL SPOTS BY SPOT ID --- NOT COMPLETE
+//--- Still need to add AVGRATING, PREVIEWIMAGE, and NUMREVIEWS to Spots table
 router.get(
    '/:spotId',
    async (req, res) => {
@@ -62,30 +68,46 @@ router.get(
    }
 )
 
+
+
+//ADD IMAGE TO A SPOT BASED ON SPOT ID --- COMPLETE
 router.post(
     '/:spotId/images',
+    requireAuth,
     async (req, res) => {
         const {spotId} = req.params;
         const {url, preview} = req.body;
 
-        const newSpotImage = await SpotImage.create({
-            spotId,
-            url,
-            preview
-        })
+        const spot = await Spot.findByPk(spotId);
 
-        const result = {
-            id: newSpotImage.id,
-            url,
-            preview
+        if (!spot) {
+            res.status(404).send({
+                "message": "Spot couldn't be found"
+            })
+        } else {
+            const newSpotImage = await SpotImage.create({
+                spotId,
+                url,
+                preview
+            })
+
+            const result = {
+                id: newSpotImage.id,
+                url,
+                preview
+            }
+
+            return res.json(result);
         }
 
-        return res.json(result);
 
 
     }
 )
 
+
+
+//CREATE A SPOT --- COMPLETE
 router.post(
     '/',
     requireAuth,
@@ -101,7 +123,6 @@ router.post(
             }
         });
 
-        console.log(errors)
 
         if (Object.keys(errors).length > 0) {
             const errorMsg = {
@@ -116,42 +137,75 @@ router.post(
     }
 )
 
+//EDIT A SPOT --- COMPLETE
 router.put(
     '/:spotId',
+    requireAuth,
     async (req, res) => {
         const {spotId} = req.params;
         const { address, city, state, country, lat, lng, name, description, price} = req.body;
+        const errors = {};
 
         const updateSpot = await Spot.findByPk(spotId);
 
-        await updateSpot.update({
-            address,
-            city,
-            state,
-            country,
-            lat,
-            lng,
-            name,
-            description,
-            price
-        })
+        if (!updateSpot) {
+            res.status(404).send({
+                "message": "Spot couldn't be found"
+            })
+        } else {
+            await updateSpot.update({
+                address,
+                city,
+                state,
+                country,
+                lat,
+                lng,
+                name,
+                description,
+                price
+            })
+            .catch((error) => {
+                for (let i = 0; i < error.errors.length; i++) {
+                    let key = error.errors[i].path
+                    errors[`${key}`] = error.errors[i].message
+                }
+            });
 
-        return res.json(updateSpot);
+            if (Object.keys(errors).length > 0) {
+                const errorMsg = {
+                    message: "Bad Request",
+                    errors: errors
+                }
+
+                return res.status(400).json(errorMsg);
+            }
+
+            return res.json(updateSpot);
+        }
+
     }
 )
 
+//DELETE A SPOT --- COMPLETE
 router.delete(
     '/:spotId',
+    requireAuth,
     async (req, res) => {
         const {spotId} = req.params;
 
         const deleteSpot = await Spot.findByPk(spotId);
 
-        await deleteSpot.destroy();
+        if (!deleteSpot) {
+            res.status(404).send({
+                "message": "Spot couldn't be found"
+            })
+        } else {
+            await deleteSpot.destroy();
 
-        return res.json({
-            "message": "Successfully deleted"
-        })
+            return res.json({
+                "message": "Successfully deleted"
+            })
+        }
     }
 )
 
