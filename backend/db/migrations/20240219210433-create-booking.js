@@ -12,19 +12,19 @@ module.exports = {
 
       userId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
           model: 'Users',
-          key: 'id'
+          key: 'id',
+          onDelete: 'CASCADE'
         }
       },
 
       spotId: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
           model: 'Spots',
-          key: 'id'
+          key: 'id',
+          onDelete: 'CASCADE'
         }
       },
 
@@ -49,7 +49,7 @@ module.exports = {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
-      
+
     });
   },
   async down(queryInterface, Sequelize) {
