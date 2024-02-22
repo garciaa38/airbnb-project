@@ -122,6 +122,45 @@ router.get(
     }
 )
 
+//DELETE A BOOKING --- NOT COMPLETE
+router.delete(
+    '/:bookingId',
+    requireAuth,
+    async (req, res) => {
+        const {bookingId} = req.params;
+
+        const deleteBooking = await Booking.findByPk(bookingId);
+        console.log(deleteBooking)
+        if (!deleteBooking) {
+            return res.status(404).json({
+                message: "Booking couldn't be found"
+            });
+        } else {
+            const findSpot = await Spot.findByPk(deleteBooking.spotId);
+            if (findSpot) {
+                if (deleteBooking.userId !== req.user.id && findSpot.ownerId !== req.user.id) {
+                    return res.status(403).json({
+                        message: "Forbidden"
+                    })
+                } else if (new Date().toISOString().split('T')[0] >= new Date(deleteBooking.startDate).toISOString().split('T')[0]) {
+                    return res.status(403).json({
+                        message: "Bookings that have been started can't be deleted"
+                    })
+                } else {
+                    await deleteBooking.destroy();
+
+                    return res.json({
+                        message: "Successfully deleted"
+                    })
+                }
+            } else {
+                return res.status(404).json({
+                    message: "Booking couldn't be found"
+                });
+            }
+        }
+    }
+)
 
 
 module.exports = router;

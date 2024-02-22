@@ -373,7 +373,7 @@ router.put(
         const updateSpot = await Spot.findByPk(spotId);
 
         if (!updateSpot) {
-            res.status(404).send({
+            return res.status(404).send({
                 "message": "Spot couldn't be found"
             })
         } else {
