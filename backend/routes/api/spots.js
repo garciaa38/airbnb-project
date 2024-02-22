@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { User, Spot, SpotImage, Review, ReviewImage, Sequelize } = require('../../db/models');
+const { User, Spot, SpotImage, Review, ReviewImage, Booking, Sequelize } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -36,6 +36,43 @@ router.get(
     }
 )
 
+//GET ALL BOOKINGS FOR A SPOT BASED ON SPOT ID --- NOT COMPLETE
+router.get(
+    '/:spotId/bookings',
+    requireAuth,
+    async (req, res) => {
+        const {spotId} = req.params;
+
+        const findSpot = await Spot.findByPk(spotId);
+
+        if (!findSpot) {
+            return res.status(404).json({
+                message: "Spot couldn't be found"
+            })
+        } else if (findSpot.userId === req.user.id) {
+            const findBookings = await Booking.findAll({
+                where: {
+                    spotId
+                },
+                include: {
+                    model: User,
+                    attributes: ['id', 'firstName', 'lastName']
+                }
+            });
+
+            return res.json(findBookings);
+        } else {
+            const findBookings = await Booking.findAll({
+                where: {
+                    spotId
+                },
+                attributes: ['spotId', 'startDate', 'endDate']
+            });
+
+            return res.json(findBookings);
+        }
+    }
+)
 
 //GET ALL REVIEWS BY SPOT ID --- NOT COMPLETE
 //--- Still need to test with ReviewImages and complete Spot table
