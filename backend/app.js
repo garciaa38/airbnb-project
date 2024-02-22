@@ -15,7 +15,7 @@ const app = express();
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(express.json());
-
+console.log('TEST1');
 if (!isProduction) {
     app.use(cors());
 }
@@ -25,7 +25,7 @@ app.use(
         policy: "cross-origin"
     })
 );
-
+console.log('TEST2');
 app.use(
     csurf({
         cookie: {
@@ -35,11 +35,11 @@ app.use(
         }
     })
 );
-
+console.log('TEST3');
 const routes = require('./routes');
-
+console.log('TEST14');
 app.use(routes);
-
+console.log('TEST5');
 app.use((_req, _res, next) => {
     const err = new Error("The requested resource couldn't be found.");
     err.title = "Resource Not Found";

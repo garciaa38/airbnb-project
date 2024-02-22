@@ -9,18 +9,19 @@ const { restoreUser } = require('../../utils/auth.js');
 const { requireAuth } = require('../../utils/auth.js')
 const { User } = require('../../db/models');
 
-
+console.log('TEST9');
 router.use(restoreUser);
+console.log('TEST10');
 router.use('/session', sessionRouter);
-
+console.log('TEST11');
 router.use('/users', usersRouter);
-
+console.log('TEST12');
 router.use('/spots', spotsRouter);
-
+console.log('TEST13');
 router.use('/reviews', reviewsRouter);
-
+console.log('TEST14');
 router.use('/bookings', bookingsRouter);
-
+console.log('TEST15');
 router.post('/test', function(req, res) {
     res.json({ requestBody: req.body });
 });

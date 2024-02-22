@@ -9,7 +9,7 @@ const apiRouter = require('./api');
     // });
 
 
-
+    console.log('TEST6');
 router.get("/api/csrf/restore", (req, res) => {
     const csrfToken = req.csrfToken();
     res.cookie("XSRF-TOKEN", csrfToken);
@@ -17,7 +17,7 @@ router.get("/api/csrf/restore", (req, res) => {
         'XSRF-Token': csrfToken
     });
 });
-
+console.log('TEST7');
 router.use('/api', apiRouter);
-
+console.log('TEST8');
 module.exports = router;
