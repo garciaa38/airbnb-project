@@ -13,11 +13,13 @@ const validateSignup = [
     check('email')
       .exists({ checkFalsy: true })
       .isEmail()
-      .withMessage('Please provide a valid email.'),
+      .withMessage('Invalid email.'),
     check('username')
-      .exists({ checkFalsy: true })
       .isLength({ min: 4 })
-      .withMessage('Please provide a username with at least 4 characters.'),
+      .withMessage('Username must be at least 4 characters long'),
+    check('username')
+        .exists({checkFalsy: true})
+        .withMessage('Username is required'),
     check('username')
       .not()
       .isEmail()
@@ -28,10 +30,10 @@ const validateSignup = [
       .withMessage('Password must be 6 characters or more.'),
     check('firstName')
       .exists({ checkFalsy: true })
-      .withMessage('You must enter a first name.'),
+      .withMessage('First Name is required'),
     check('lastName')
       .exists({ checkFalsy: true })
-      .withMessage('You must enter a last name.'),
+      .withMessage('Last Name is required'),
     handleValidationErrors
   ];
 
@@ -41,6 +43,37 @@ const validateSignup = [
     async (req, res) => {
       const { email, password, username, firstName, lastName } = req.body;
       const hashedPassword = bcrypt.hashSync(password);
+
+      const checkEmail = await User.findOne({
+        where: {
+          email
+        }
+      })
+
+      if (checkEmail) {
+        return res.status(500).json({
+          "message": "User already exists",
+          "errors": {
+            "email": "User with that email already exists"
+          }
+        });
+      }
+
+      const checkUsername = await User.findOne({
+        where: {
+          username
+        }
+      })
+
+      if (checkUsername) {
+        return res.status(500).json({
+          "message": "User already exists",
+          "errors": {
+            "email": "User with that username already exists"
+          }
+        });
+      }
+
       const user = await User.create({ email, username, hashedPassword, firstName, lastName });
 
       const safeUser = {
