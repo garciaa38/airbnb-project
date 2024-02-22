@@ -11,7 +11,6 @@ const { User } = require('../../db/models');
 
 
 router.use(restoreUser);
-
 router.use('/session', sessionRouter);
 
 router.use('/users', usersRouter);

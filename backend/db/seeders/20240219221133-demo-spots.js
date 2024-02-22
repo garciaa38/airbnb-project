@@ -71,7 +71,7 @@ module.exports = {
         description: 'Come stay at this place that does not exist',
         price: 1200
       },
-    ], { validate: true })
+    ], { validate: true });
   },
 
   async down (queryInterface, Sequelize) {
