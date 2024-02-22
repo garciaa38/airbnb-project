@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
 const { User, Spot, SpotImage, Review, ReviewImage, Booking, Sequelize } = require('../../db/models');
-
+const { Op } = require('sequelize');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 
@@ -14,9 +14,133 @@ const router = express.Router();
 router.get(
     '/',
     async (req, res) => {
-        const allSpots = await Spot.findAll();
+        const query = {};
+        const errors = {};
 
-        return res.json(allSpots);
+        let page = req.query.page === undefined ? 1 : parseInt(req.query.page);
+        let size = req.query.size === undefined ? 20 : parseInt(req.query.size);
+
+        if (isNaN(page)) {
+            errors.page = "Page query is invalid"
+        }
+
+        if (isNaN(size)) {
+            errors.size = "Size query is invalid"
+        }
+
+        if (page > 10) {
+            page = 10;
+        }
+
+        if (size > 20) {
+            size = 20;
+        }
+
+        if (page >= 1 && size >= 1) {
+            query.limit = size;
+            query.offset = size * (page - 1);
+        } else {
+            if (page <= 0) {
+                errors.page = "Page must be greater than or equal to 1"
+            }
+
+            if (size <= 0) {
+                errors.size = "Size must be great than or equal to 1"
+            }
+        }
+
+        const where = {};
+
+        const {maxLat, minLat, maxLng, minLng, maxPrice, minPrice} = req.query;
+
+        if (maxLat) {
+            if (Number(maxLat) > 90 ||
+            isNaN(Number(maxLat))) {
+                errors.maxLat = "Maximum latitude is invalid"
+            } else {
+                where.lat = {
+                    [Op.lte]: Number(maxLat)
+                }
+            }
+        }
+
+        if (minLat) {
+            if (Number(minLat) < -90 ||
+            isNaN(Number(minLat))) {
+                errors.minLat = "Minimum latitude is invalid"
+            } else {
+                where.lat = {
+                    [Op.gte]: Number(minLat)
+                }
+            }
+        }
+
+        if (maxLng) {
+            if (Number(maxLng) > 180 ||
+            isNaN(Number(maxLng))) {
+                errors.maxLng = "Maximum longitude is invalid"
+            } else {
+                where.lng = {
+                    [Op.lte]: Number(maxLng)
+                }
+            }
+        }
+
+        if (minLng) {
+            if (Number(minLng) < -180 ||
+            isNaN(Number(minLng))) {
+                errors.minLng = "Minimum longitude is invalid"
+            } else {
+                where.lng = {
+                    [Op.gte]: Number(minLng)
+                }
+            }
+        }
+
+        if (maxPrice) {
+            if (isNaN(Number(maxPrice))) {
+                errors.maxPrice = "Maximum price is invalid"
+            } else if (Number(maxPrice) < 0) {
+                errors.maxPrice = "Maximum price must be greater than or equal to 0"
+            } else {
+                where.price = {
+                    [Op.lte]: Number(maxPrice)
+                }
+            }
+        }
+
+        if (minPrice) {
+            if (isNaN(Number(minPrice))) {
+                errors.minPrice = "Minimum price is invalid"
+            } else if (Number(minPrice) < 0) {
+                errors.minPrice = "Minimum price must be greater than or equal to 0"
+            } else {
+                where.price = {
+                    [Op.gte]: Number(minPrice)
+                }
+            }
+        }
+
+
+        if (Object.keys(errors).length > 0) {
+            return res.status(400).json({
+                message : "Bad Request",
+                errors: errors
+            })
+        } else {
+            const allSpots = await Spot.findAll({
+                where,
+                ...query
+            });
+
+            if (allSpots.length === 0) {
+                return res.json({
+                    message: "Sorry, we couldn't find any spots matching your search!"
+                })
+            } else {
+                return res.json(allSpots);
+            }
+        }
     }
 )
 
