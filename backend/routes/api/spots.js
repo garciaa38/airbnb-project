@@ -45,11 +45,13 @@ router.get(
 
         const findSpot = await Spot.findByPk(spotId);
 
+        console.log(findSpot)
+
         if (!findSpot) {
             return res.status(404).json({
                 message: "Spot couldn't be found"
             })
-        } else if (findSpot.userId === req.user.id) {
+        } else if (findSpot.ownerId === req.user.id) {
             const findBookings = await Booking.findAll({
                 where: {
                     spotId
@@ -142,6 +144,97 @@ router.get(
     return res.json(currentSpot);
 
    }
+)
+
+//CREATE BOOKING FOR SPOT BASED ON SPOT ID --- NOT COMPLETE
+router.post(
+    '/:spotId/bookings',
+    requireAuth,
+    async (req, res) => {
+        const {spotId} = req.params;
+        const { startDate, endDate } = req.body;
+        const errors = {};
+        const findSpot = await Spot.findByPk(spotId);
+
+        if (!findSpot) {
+            res.status(404).json({
+                message: "Spot couldn't be found"
+            });
+        } else if (findSpot.ownerId === req.user.id) {
+            res.status(403).json({
+                message: "Forbidden"
+            })
+        } else {
+            const currSpotBookings = await Booking.findAll({
+                where: {
+                    spotId
+                },
+                attributes: ['startDate', 'endDate']
+            })
+
+            if (currSpotBookings.length > 0) {
+                const conflictErrors = {};
+
+                for (let i = 0; i < currSpotBookings.length; i++) {
+                    const currSpotStartDate = new Date(currSpotBookings[i].startDate).toISOString().split('T')[0];
+                    const currSpotEndDate = new Date(currSpotBookings[i].endDate).toISOString().split('T')[0];
+                    const reqStartDate = new Date(startDate).toISOString().split('T')[0];
+                    const reqEndDate = new Date(endDate).toISOString().split('T')[0];
+
+                    if ((reqStartDate === currSpotStartDate) ||
+                        (reqStartDate > currSpotStartDate && reqStartDate < currSpotEndDate)) {
+                            conflictErrors.startDate = "Start date conflicts with an existing booking"
+                        }
+
+                    if ((reqEndDate === currSpotEndDate) ||
+                        (reqEndDate > currSpotStartDate && reqEndDate < currSpotEndDate)) {
+                            conflictErrors.endDate = "End date conflicts with an existing booking"
+                        }
+
+                    if (Object.keys(conflictErrors).length > 0) {
+                        const errorMsg = {
+                            message: "Sorry, this spot is already booked for the specified dates",
+                            errors: conflictErrors
+                        }
+                        return res.status(403).json(errorMsg);
+                    }
+                }
+            }
+
+            const createBooking = await Booking.create({
+                userId: req.user.id,
+                spotId,
+                startDate,
+                endDate
+            })
+            .catch((error) => {
+                for (let i = 0; i < error.errors.length; i++) {
+                    let key = error.errors[i].path
+                    errors[`${key}`] = error.errors[i].message
+                }
+            });
+
+            if (Object.keys(errors).length > 0) {
+                const errorMsg = {
+                    message: "Bad Request",
+                    errors: errors
+                }
+
+                return res.status(400).json(errorMsg);
+            } else {
+                return res.json({
+                    id: createBooking.id,
+                    userId: createBooking.userId,
+                    spotId: Number(createBooking.spotId),
+                    startDate: new Date(createBooking.startDate).toISOString().split('T')[0],
+                    endDate: new Date(createBooking.endDate).toISOString().split('T')[0],
+                    updatedAt: createBooking.updatedAt,
+                    createdAt: createBooking.createdAt
+                });
+            }
+
+        }
+    }
 )
 
 //CREATE REVIEW FOR SPOT BASED ON SPOT ID --- NOT COMPLETE
