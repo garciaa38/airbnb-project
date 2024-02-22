@@ -1,0 +1,166 @@
+const express = require('express');
+const bcrypt = require('bcryptjs');
+
+const { setTokenCookie, requireAuth } = require('../../utils/auth');
+const { User, Spot, SpotImage, Review, ReviewImage, Sequelize } = require('../../db/models');
+
+const { check } = require('express-validator');
+const { handleValidationErrors } = require('../../utils/validation');
+
+
+const router = express.Router();
+
+
+//ADD AN IMAGE TO A REVIEW BASED ON REVIEW ID --- NOT COMPLETE
+router.post(
+    '/:reviewId/images',
+    requireAuth,
+    async (req, res) => {
+        const {reviewId} = req.params;
+        const {url} = req.body;
+        const errors = {};
+
+        const findReview = await Review.findOne({
+            where: {
+                id: reviewId,
+                userId: req.user.id
+            }
+        });
+
+        if (!findReview) {
+            res.status(404).json({
+                message: "Review couldn't be found"
+            })
+        } else {
+            const allReviewImages = await ReviewImage.findAll({
+                where: {
+                    reviewId
+                }
+            });
+
+            if (allReviewImages.length >= 10) {
+                res.status(403).json({
+                    message: "Maximum number of images for this resource was reached"
+                })
+            } else {
+                const newImage = await ReviewImage.create({
+                    reviewId,
+                    url
+                })
+                .catch((error) => {
+                    for (let i = 0; i < error.errors.length; i++) {
+                        let key = error.errors[i].path
+                        errors[`${key}`] = error.errors[i].message
+                    }
+                });
+
+                if (Object.keys(errors).length > 0) {
+                    const errorMsg = {
+                        message: "Bad Request",
+                        errors: errors
+                    }
+                    return res.status(400).json(errorMsg);
+                } else {
+                    return res.status(200).json({
+                        id: newImage.id,
+                        url: newImage.url
+                    });
+                }
+            }
+        }
+    }
+)
+
+//EDIT A REVIEW --- NOT COMPLETE
+router.put(
+    '/:reviewId',
+    requireAuth,
+    async (req, res) => {
+        const {reviewId} = req.params;
+        const { review, stars } = req.body;
+        const errors = {};
+
+        const updateReview = await Review.findByPk(reviewId);
+
+        if (!updateReview) {
+            return res.status(404).json({
+                message: "Review couldn't be found"
+            })
+        } else {
+            await updateReview.update({
+                review,
+                stars
+            })
+            .catch((error) => {
+                for (let i = 0; i < error.errors.length; i++) {
+                    let key = error.errors[i].path
+                    errors[`${key}`] = error.errors[i].message
+                }
+            });
+
+            if (Object.keys(errors).length > 0) {
+                const errorMsg = {
+                    message: "Bad Request",
+                    errors: errors
+                }
+                return res.status(400).json(errorMsg);
+            } else {
+                return res.status(201).json(updateReview);
+            }
+        }
+    }
+)
+
+
+//GET ALL REVIEWS OF CURRENT USER --- NOT COMPLETE
+//--- Still need to test with ReviewImages and with completed Spot table.
+router.get(
+    '/current',
+    requireAuth,
+    async (req, res) => {
+        const allUserReviews = await Review.findAll({
+            where: {
+                userId: req.user.id
+            },
+            include: [
+                {
+                    model: User
+                },
+                {
+                    model: Spot
+                },
+                {
+                    model: ReviewImage
+                }
+            ]
+        });
+
+        return res.json(allUserReviews)
+    }
+)
+
+//DELETE A REVIEW --- NOT COMPLETE
+router.delete(
+    '/:reviewId',
+    requireAuth,
+    async (req, res) => {
+        const {reviewId} = req.params;
+
+        const deleteReview = await Review.findByPk(reviewId);
+
+        if (!deleteReview) {
+            return res.status(404).json({
+                message: "Review couldn't be found"
+            });
+        } else {
+            await deleteReview.destroy();
+
+            return res.json({
+                message: "Successfully deleted"
+            })
+        }
+    }
+)
+
+
+module.exports = router;

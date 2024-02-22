@@ -34,12 +34,28 @@ module.exports = (sequelize, DataTypes) => {
 
     review: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notNull: {
+          msg: "Review text is required"
+        },
+        notEmpty: {
+          msg: "Review text is required"
+        }
+      }
     },
 
     stars: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 5,
+      validate: {
+        checkNum(value) {
+          if (value < 1 || value > 5) {
+            throw new Error('Stars must be an integer from 1 to 5')
+          }
+        }
+      }
     },
 
   }, {

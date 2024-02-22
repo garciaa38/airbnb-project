@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { User, Spot, SpotImage, Sequelize } = require('../../db/models');
+const { User, Spot, SpotImage, Review, ReviewImage, Sequelize } = require('../../db/models');
 
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -26,8 +26,6 @@ router.get(
     '/current',
     requireAuth,
     async (req, res) => {
-        console.log(req.user.id);
-
         const allUsersSpots = await Spot.findAll({
             where: {
                 ownerId: req.user.id
@@ -35,6 +33,47 @@ router.get(
         });
 
         return res.json(allUsersSpots);
+    }
+)
+
+
+//GET ALL REVIEWS BY SPOT ID --- NOT COMPLETE
+//--- Still need to test with ReviewImages and complete Spot table
+router.get(
+    '/:spotId/reviews',
+    async (req, res) => {
+        const {spotId} = req.params;
+
+        const findSpot = await Spot.findByPk(spotId);
+
+        const spotReviews = await Review.findAll({
+            where:{
+                spotId
+            },
+            include: [
+                {
+                    model: User,
+                    attributes: ['id', 'firstName', 'lastName']
+                },
+                {
+                    model: ReviewImage,
+                    attributes: ['id', 'url']
+                }
+            ]
+        });
+
+        if (!findSpot) {
+            return res.status(404).json({
+                "message": "Spot couldn't be found"
+            });
+        } else if (spotReviews.length === 0){
+            return res.json({
+                "message": "Be the first to leave a review for this spot!"
+            });
+        } else {
+            return res.json(spotReviews);
+        }
+
     }
 )
 
@@ -68,7 +107,62 @@ router.get(
    }
 )
 
+//CREATE REVIEW FOR SPOT BASED ON SPOT ID --- NOT COMPLETE
+router.post(
+    '/:spotId/reviews',
+    requireAuth,
+    async (req, res) => {
+        const {spotId} = req.params;
+        const {review, stars} = req.body;
+        const errors = {};
 
+        const findSpot = await Spot.findByPk(spotId);
+
+        if (!findSpot) {
+            return res.status(404).json({
+                message: "Spot couldn't be found"
+            });
+        } else {
+
+            const findUserReview = await Review.findOne({
+                where: {
+                    userId: req.user.id,
+                    spotId
+                }
+            })
+
+            if (findUserReview) {
+                return res.status(500).json({
+                    message: "User already has a review for this spot"
+                })
+            } else {
+                const spotReview = await Review.create({
+                    userId: req.user.id,
+                    spotId,
+                    review,
+                    stars
+                })
+                .catch((error) => {
+                    for (let i = 0; i < error.errors.length; i++) {
+                        let key = error.errors[i].path
+                        errors[`${key}`] = error.errors[i].message
+                    }
+                });
+
+                if (Object.keys(errors).length > 0) {
+                    const errorMsg = {
+                        message: "Bad Request",
+                        errors: errors
+                    }
+
+                    return res.status(400).json(errorMsg);
+                } else {
+                    return res.status(201).json(spotReview);
+                }
+            }
+        }
+    }
+)
 
 //ADD IMAGE TO A SPOT BASED ON SPOT ID --- COMPLETE
 router.post(
