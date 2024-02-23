@@ -130,7 +130,20 @@ router.get(
         } else {
             const allSpots = await Spot.findAll({
                 where,
-                ...query
+                ...query,
+                include: [
+                    {
+                        model: Review,
+                        attributes: []
+                    }
+                ],
+                attributes: {
+                    include: [
+                        [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgRating']
+                    ]
+                },
+                group: ['Spot.id'],
+                raw: true
             });
 
             if (allSpots.length === 0) {
@@ -138,7 +151,9 @@ router.get(
                     message: "Sorry, we couldn't find any spots matching your search!"
                 })
             } else {
-                return res.json(allSpots);
+                return res.json({
+                    Spots: allSpots
+                });
             }
         }
     }
