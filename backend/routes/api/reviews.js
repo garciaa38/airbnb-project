@@ -22,15 +22,18 @@ router.post(
 
         const findReview = await Review.findOne({
             where: {
-                id: reviewId,
-                userId: req.user.id
+                id: reviewId
             }
         });
 
         if (!findReview) {
-            res.status(404).json({
+            return res.status(404).json({
                 message: "Review couldn't be found"
-            })
+            });
+        } else if (findReview.userId !== req.user.id) {
+            return res.status(403).json({
+                message: "Forbidden"
+            });
         } else {
             const allReviewImages = await ReviewImage.findAll({
                 where: {
@@ -86,6 +89,10 @@ router.put(
             return res.status(404).json({
                 message: "Review couldn't be found"
             })
+        } else if (updateReview.userId !== req.user.id) {
+            return res.status(403).json({
+                message: "Forbidden"
+            })
         } else {
             await updateReview.update({
                 review,
@@ -105,7 +112,22 @@ router.put(
                 }
                 return res.status(400).json(errorMsg);
             } else {
-                return res.status(201).json(updateReview);
+                let splitCreate = updateReview.createdAt.toISOString().split('T').join(' ');
+                let createdAt = splitCreate.split('.')[0];
+                let splitUpdate = updateReview.updatedAt.toISOString().split('T').join(' ');
+                let updatedAt = splitUpdate.split('.')[0];
+
+                let updatedReview = {
+                    id: updateReview.id,
+                    userId: updateReview.userId,
+                    spotId: updateReview.spotId,
+                    review: updateReview.review,
+                    stars: updateReview.stars,
+                    createdAt,
+                    updatedAt
+                }
+
+                return res.status(200).json(updatedReview);
             }
         }
     }
@@ -124,18 +146,69 @@ router.get(
             },
             include: [
                 {
-                    model: User
+                    model: User,
+                    attributes: ['id', 'firstName', 'lastName']
                 },
                 {
-                    model: Spot
+                    model: Spot,
+                    attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
+                    include: [
+                        {
+                            model: SpotImage,
+                            where: {
+                                preview: true
+                            },
+                            attributes: ['url'],
+                        },
+                    ],
                 },
                 {
-                    model: ReviewImage
+                    model: ReviewImage,
+                    attributes: ['id', 'url']
                 }
             ]
         });
 
-        return res.json(allUserReviews)
+        const reviews = [];
+                for (let i = 0; i < allUserReviews.length; i++) {
+
+                    let splitCreate = allUserReviews[i].createdAt.toISOString().split('T').join(' ');
+                    let createdAt = splitCreate.split('.')[0];
+
+                    let splitUpdate = allUserReviews[i].updatedAt.toISOString().split('T').join(' ');
+                    let updatedAt = splitUpdate.split('.')[0];
+
+
+                    let reviewInfo = {
+                        id: allUserReviews[i].id,
+                        userId: allUserReviews[i].userId,
+                        spotId: allUserReviews[i].spotId,
+                        review: allUserReviews[i].review,
+                        stars: allUserReviews[i].stars,
+                        createdAt,
+                        updatedAt,
+                        User: allUserReviews[i].User,
+                        Spot: {
+                            id: allUserReviews[i].Spot.id,
+                            ownerId: allUserReviews[i].Spot.ownerId,
+                            address: allUserReviews[i].Spot.address,
+                            city: allUserReviews[i].Spot.city,
+                            state: allUserReviews[i].Spot.state,
+                            country: allUserReviews[i].Spot.country,
+                            lat: allUserReviews[i].Spot.lat,
+                            lng: allUserReviews[i].Spot.lng,
+                            name: allUserReviews[i].Spot.name,
+                            price: allUserReviews[i].Spot.price,
+                            previewImage: allUserReviews[i].Spot.SpotImages[0].url,
+                        },
+                        ReviewImages: allUserReviews[i].ReviewImages
+                    }
+                    reviews.push(reviewInfo)
+                }
+
+        return res.json({
+            Reviews: reviews
+        });
     }
 )
 
@@ -151,6 +224,10 @@ router.delete(
         if (!deleteReview) {
             return res.status(404).json({
                 message: "Review couldn't be found"
+            });
+        } else if (deleteReview.userId !== req.user.id) {
+            return res.status(403).json({
+                message: "Forbidden"
             });
         } else {
             await deleteReview.destroy();

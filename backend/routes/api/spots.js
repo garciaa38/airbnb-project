@@ -343,7 +343,34 @@ router.get(
                 "message": "Be the first to leave a review for this spot!"
             });
         } else {
-            return res.json(spotReviews);
+            const reviews = [];
+                for (let i = 0; i < spotReviews.length; i++) {
+
+                    let splitCreate = spotReviews[i].createdAt.toISOString().split('T').join(' ');
+                    let createdAt = splitCreate.split('.')[0];
+
+                    let splitUpdate = spotReviews[i].updatedAt.toISOString().split('T').join(' ');
+                    let updatedAt = splitUpdate.split('.')[0];
+
+
+                    let reviewInfo = {
+                        id: spotReviews[i].id,
+                        userId: spotReviews[i].userId,
+                        spotId: spotReviews[i].spotId,
+                        review: spotReviews[i].review,
+                        stars: spotReviews[i].stars,
+                        createdAt,
+                        updatedAt,
+                        User: spotReviews[i].User,
+                        ReviewImages: spotReviews[i].ReviewImages
+                    }
+                    reviews.push(reviewInfo)
+                }
+
+            return res.json({
+                Reviews: reviews
+            });
+
         }
 
     }
@@ -560,10 +587,25 @@ router.post(
                         message: "Bad Request",
                         errors: errors
                     }
-
                     return res.status(400).json(errorMsg);
                 } else {
-                    return res.status(201).json(spotReview);
+                    let splitCreate = spotReview.createdAt.toISOString().split('T').join(' ');
+                    let createdAt = splitCreate.split('.')[0];
+
+                    let splitUpdate = spotReview.updatedAt.toISOString().split('T').join(' ');
+                    let updatedAt = splitUpdate.split('.')[0];
+
+                    const newReview = {
+                        id: spotReview.id,
+                        userId: spotReview.userId,
+                        spotId: spotReview.spotId,
+                        review: spotReview.review,
+                        stars: spotReview.stars,
+                        createdAt,
+                        updatedAt
+                    }
+
+                    return res.status(201).json(newReview);
                 }
             }
         }
