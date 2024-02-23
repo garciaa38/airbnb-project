@@ -519,12 +519,15 @@ router.post(
                     const reqStartDate = new Date(startDate).toISOString().split('T')[0];
                     const reqEndDate = new Date(endDate).toISOString().split('T')[0];
 
-                    if ((reqStartDate === currSpotStartDate) ||
+                    //REFACTOR BOOKING CONFLICT CODE TO ACCOUNT FOR DATES THAT SURROUND AN EXISTING BOOKING AND DATES THAT ARE WITHIN
+                    //AN EXISTING BOOKING
+
+                    if ((reqStartDate === currSpotStartDate || reqStartDate === currSpotEndDate) ||
                         (reqStartDate > currSpotStartDate && reqStartDate < currSpotEndDate)) {
                             conflictErrors.startDate = "Start date conflicts with an existing booking"
                         }
 
-                    if ((reqEndDate === currSpotEndDate) ||
+                    if ((reqEndDate === currSpotEndDate || reqEndDate === currSpotStartDate) ||
                         (reqEndDate > currSpotStartDate && reqEndDate < currSpotEndDate)) {
                             conflictErrors.endDate = "End date conflicts with an existing booking"
                         }
@@ -637,7 +640,7 @@ router.post(
                     const newReview = {
                         id: spotReview.id,
                         userId: spotReview.userId,
-                        spotId: spotReview.spotId,
+                        spotId: Number(spotReview.spotId),
                         review: spotReview.review,
                         stars: spotReview.stars,
                         createdAt,
@@ -659,6 +662,8 @@ router.post(
         const {spotId} = req.params;
         const {url, preview} = req.body;
 
+        console.log(preview)
+
         const spot = await Spot.findByPk(spotId);
 
         if (!spot) {
@@ -671,14 +676,18 @@ router.post(
             });
         } else {
             if (preview === true) {
+                console.log(preview)
                 const checkSpotImages = await SpotImage.findAll({
                     where: {
+                        spotId,
                         preview: true
                     }
                 })
 
                 if (checkSpotImages.length > 0) {
-                    checkSpotImages[0].preview = false
+                    await checkSpotImages[0].update({
+                        preview: false
+                    })
                 }
             }
 
