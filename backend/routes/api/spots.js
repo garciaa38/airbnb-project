@@ -278,8 +278,6 @@ router.get(
 
         const findSpot = await Spot.findByPk(spotId);
 
-        console.log(findSpot)
-
         if (!findSpot) {
             return res.status(404).json({
                 message: "Spot couldn't be found"
@@ -295,7 +293,31 @@ router.get(
                 }
             });
 
-            return res.json(findBookings);
+            const bookings = [];
+            for (let i = 0; i < findBookings.length; i++) {
+
+                let splitCreate = findBookings[i].createdAt.toISOString().split('T').join(' ');
+                let createdAt = splitCreate.split('.')[0];
+                let splitUpdate = findBookings[i].updatedAt.toISOString().split('T').join(' ');
+                let updatedAt = splitUpdate.split('.')[0];
+
+                let bookingInfo = {
+                    User: findBookings[i].User,
+                    id: findBookings[i].id,
+                    spotId: findBookings[i].spotId,
+                    userId: findBookings[i].userId,
+                    startDate: findBookings[i].startDate.toISOString().split('T')[0],
+                    endDate: findBookings[i].endDate.toISOString().split('T')[0],
+                    createdAt,
+                    updatedAt
+                };
+
+                bookings.push(bookingInfo)
+            }
+
+            return res.json({
+                Bookings: bookings
+            });
         } else {
             const findBookings = await Booking.findAll({
                 where: {
@@ -304,7 +326,20 @@ router.get(
                 attributes: ['spotId', 'startDate', 'endDate']
             });
 
-            return res.json(findBookings);
+            const bookings = [];
+            for (let i = 0; i < findBookings.length; i++) {
+                let bookingInfo = {
+                    spotId: findBookings[i].spotId,
+                    startDate: findBookings[i].startDate.toISOString().split('T')[0],
+                    endDate: findBookings[i].endDate.toISOString().split('T')[0]
+                };
+
+                bookings.push(bookingInfo)
+            }
+
+            return res.json({
+                Bookings: bookings
+            });
         }
     }
 )
@@ -522,17 +557,21 @@ router.post(
                     message: "Bad Request",
                     errors: errors
                 }
-
                 return res.status(400).json(errorMsg);
             } else {
+                let splitCreate = createBooking.createdAt.toISOString().split('T').join(' ');
+                let createdAt = splitCreate.split('.')[0];
+                let splitUpdate = createBooking.updatedAt.toISOString().split('T').join(' ');
+                let updatedAt = splitUpdate.split('.')[0];
+
                 return res.json({
                     id: createBooking.id,
-                    userId: createBooking.userId,
                     spotId: Number(createBooking.spotId),
+                    userId: createBooking.userId,
                     startDate: new Date(createBooking.startDate).toISOString().split('T')[0],
                     endDate: new Date(createBooking.endDate).toISOString().split('T')[0],
-                    updatedAt: createBooking.updatedAt,
-                    createdAt: createBooking.createdAt
+                    createdAt,
+                    updatedAt
                 });
             }
 

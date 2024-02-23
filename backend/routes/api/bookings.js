@@ -89,14 +89,19 @@ router.put(
 
                 return res.status(400).json(errorMsg);
             } else {
+                let splitCreate = findBooking.createdAt.toISOString().split('T').join(' ');
+                let createdAt = splitCreate.split('.')[0];
+                let splitUpdate = findBooking.updatedAt.toISOString().split('T').join(' ');
+                let updatedAt = splitUpdate.split('.')[0];
+
                 return res.json({
                     id: findBooking.id,
-                    userId: findBooking.userId,
                     spotId: Number(findBooking.spotId),
+                    userId: findBooking.userId,
                     startDate: new Date(findBooking.startDate).toISOString().split('T')[0],
                     endDate: new Date(findBooking.endDate).toISOString().split('T')[0],
-                    updatedAt: findBooking.updatedAt,
-                    createdAt: findBooking.createdAt
+                    createdAt,
+                    updatedAt
                 });
             }
         }
@@ -113,12 +118,61 @@ router.get(
             where: {
                 userId: req.user.id
             },
-            include: {
-                model: Spot
-            }
+            include: [
+                {
+                    model: Spot,
+                    attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price'],
+                    include: [
+                        {
+                            model: SpotImage,
+                            where: {
+                                preview: true
+                            },
+                            attributes: ['url']
+                        }
+                    ]
+                }
+            ]
         });
 
-        return res.json(usersBookings);
+        const bookings = [];
+                for (let i = 0; i < usersBookings.length; i++) {
+
+                    let splitCreate = usersBookings[i].createdAt.toISOString().split('T').join(' ');
+                    let createdAt = splitCreate.split('.')[0];
+
+                    let splitUpdate = usersBookings[i].updatedAt.toISOString().split('T').join(' ');
+                    let updatedAt = splitUpdate.split('.')[0];
+
+
+                    let bookingInfo = {
+                        id: usersBookings[i].id,
+                        spotId: usersBookings[i].spotId,
+                        Spot: {
+                            id: usersBookings[i].Spot.id,
+                            ownerId: usersBookings[i].Spot.ownerId,
+                            address: usersBookings[i].Spot.address,
+                            city: usersBookings[i].Spot.city,
+                            state: usersBookings[i].Spot.state,
+                            country: usersBookings[i].Spot.country,
+                            lat: usersBookings[i].Spot.lat,
+                            lng: usersBookings[i].Spot.lng,
+                            name: usersBookings[i].Spot.name,
+                            price: usersBookings[i].Spot.price,
+                            previewImage: usersBookings[i].Spot.SpotImages[0].url,
+                        },
+                        userId: usersBookings[i].userId,
+                        startDate: usersBookings[i].startDate.toISOString().split('T')[0],
+                        endDate: usersBookings[i].endDate.toISOString().split('T')[0],
+                        createdAt,
+                        updatedAt
+                    }
+                    bookings.push(bookingInfo)
+                }
+
+        return res.json({
+            Bookings: bookings
+        });
     }
 )
 
