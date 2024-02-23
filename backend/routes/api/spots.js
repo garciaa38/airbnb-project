@@ -670,6 +670,18 @@ router.post(
                 message: "Forbidden"
             });
         } else {
+            if (preview === true) {
+                const checkSpotImages = await SpotImage.findAll({
+                    where: {
+                        preview: true
+                    }
+                })
+
+                if (checkSpotImages.length > 0) {
+                    checkSpotImages[0].preview = false
+                }
+            }
+
             const newSpotImage = await SpotImage.create({
                 spotId,
                 url,
