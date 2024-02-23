@@ -15,19 +15,19 @@ module.exports = {
         userId: 2,
         spotId: 1,
         review: 'This is test review 1',
-        stars: 4
+        stars: 2
       },
       {
         userId: 3,
         spotId: 1,
         review: 'This is test review 2',
-        stars: 4
+        stars: 5
       },
       {
         userId: 4,
         spotId: 2,
         review: 'This is test review 3',
-        stars: 4
+        stars: 1
       },
       {
         userId: 5,
@@ -45,31 +45,31 @@ module.exports = {
         userId: 7,
         spotId: 3,
         review: 'This is test review 6',
-        stars: 4
+        stars: 3
       },
       {
         userId: 8,
         spotId: 4,
         review: 'This is test review 7',
-        stars: 4
+        stars: 3
       },
       {
         userId: 9,
         spotId: 4,
         review: 'This is test review 8',
-        stars: 4
+        stars: 2
       },
       {
         userId: 10,
         spotId: 5,
         review: 'This is test review 9',
-        stars: 4
+        stars: 1
       },
       {
         userId: 1,
         spotId: 5,
         review: 'This is test review 10',
-        stars: 4
+        stars: 5
       }
     ], { validate: true });
   },

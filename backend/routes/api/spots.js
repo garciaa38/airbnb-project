@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
-const { User, Spot, SpotImage, Review, ReviewImage, Booking, Sequelize } = require('../../db/models');
+const { User, Spot, SpotImage, Review, ReviewImage, Booking, sequelize } = require('../../db/models');
 const { Op } = require('sequelize');
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
@@ -134,16 +134,23 @@ router.get(
                 include: [
                     {
                         model: Review,
-                        attributes: []
+                        attributes: ['stars']
+                    },
+                    {
+                        model: SpotImage,
+                        attributes: ['url'],
+                        where: {
+                            preview: true
+                        }
                     }
                 ],
-                attributes: {
-                    include: [
-                        [Sequelize.fn('AVG', Sequelize.col('Reviews.stars')), 'avgRating']
-                    ]
-                },
-                group: ['Spot.id'],
-                raw: true
+
+                // attributes: [
+                //     [sequelize.fn('AVG', sequelize.col('Review.stars')), 'avgRating']
+                // ],
+
+                // group: ['Spot.id'],
+                //raw: true
             });
 
             if (allSpots.length === 0) {
@@ -151,8 +158,47 @@ router.get(
                     message: "Sorry, we couldn't find any spots matching your search!"
                 })
             } else {
+
+                const spots = [];
+                for (let i = 0; i < allSpots.length; i++) {
+                    let totalRating = 0;
+                    let divider = allSpots[i].Reviews.length
+                    for (let j = 0; j < allSpots[i].Reviews.length; j++) {
+                        let rating = allSpots[i].Reviews[j].stars;
+                        totalRating += rating;
+                    }
+                    let avgRating = Math.round((totalRating / divider) * 10) / 10;
+
+
+                    let splitCreate = allSpots[i].createdAt.toISOString().split('T').join(' ');
+                    let createdAt = splitCreate.split('.')[0];
+
+                    let splitUpdate = allSpots[i].updatedAt.toISOString().split('T').join(' ');
+                    let updatedAt = splitUpdate.split('.')[0];
+
+
+                    let spotInfo = {
+                        id: allSpots[i].id,
+                        ownerId: allSpots[i].ownerId,
+                        address: allSpots[i].address,
+                        city: allSpots[i].city,
+                        state: allSpots[i].state,
+                        country: allSpots[i].country,
+                        lat: allSpots[i].lat,
+                        lng: allSpots[i].lng,
+                        name: allSpots[i].name,
+                        description: allSpots[i].description,
+                        price: allSpots[i].price,
+                        createdAt,
+                        updatedAt,
+                        avgRating,
+                        previewImage: allSpots[i].SpotImages[0].url
+                    }
+                    spots.push(spotInfo)
+                }
+
                 return res.json({
-                    Spots: allSpots
+                    Spots: spots
                 });
             }
         }
@@ -165,13 +211,61 @@ router.get(
     '/current',
     requireAuth,
     async (req, res) => {
-        const allUsersSpots = await Spot.findAll({
+        const allSpots = await Spot.findAll({
             where: {
                 ownerId: req.user.id
-            }
+            },
+            include: [
+                {
+                    model: Review,
+                    attributes: ['stars']
+                },
+                {
+                    model: SpotImage,
+                    attributes: ['url'],
+                    where: {
+                        preview: true
+                    }
+                }
+            ],
         });
 
-        return res.json(allUsersSpots);
+        const spots = [];
+        for (let i = 0; i < allSpots.length; i++) {
+            let totalRating = 0;
+            let divider = allSpots[i].Reviews.length
+            for (let j = 0; j < allSpots[i].Reviews.length; j++) {
+                let rating = allSpots[i].Reviews[j].stars;
+                totalRating += rating;
+            }
+            let avgRating = Math.round((totalRating / divider) * 10) / 10;
+            let splitCreate = allSpots[i].createdAt.toISOString().split('T').join(' ');
+            let createdAt = splitCreate.split('.')[0];
+            let splitUpdate = allSpots[i].updatedAt.toISOString().split('T').join(' ');
+            let updatedAt = splitUpdate.split('.')[0];
+            let spotInfo = {
+                id: allSpots[i].id,
+                ownerId: allSpots[i].ownerId,
+                address: allSpots[i].address,
+                city: allSpots[i].city,
+                state: allSpots[i].state,
+                country: allSpots[i].country,
+                lat: allSpots[i].lat,
+                lng: allSpots[i].lng,
+                name: allSpots[i].name,
+                description: allSpots[i].description,
+                price: allSpots[i].price,
+                createdAt,
+                updatedAt,
+                avgRating,
+                previewImage: allSpots[i].SpotImages[0].url
+            }
+                spots.push(spotInfo)
+            }
+
+            return res.json({
+                Spots: spots
+            });
     }
 )
 
@@ -267,20 +361,63 @@ router.get(
         where: {
             id: spotId
         },
-        include: {
-            model: User,
-            attributes: ['id', 'firstName', 'lastName'],
-            as: 'Owner'
-        }
+        include:  [
+            {
+                model: User,
+                attributes: ['id', 'firstName', 'lastName'],
+                as: 'Owner'
+            },
+            {
+                model: SpotImage,
+                attributes: ['id', 'url', 'preview']
+            },
+            {
+                model: Review,
+                attributes: ['stars']
+            }
+        ]
     });
 
     if (!currentSpot) {
         return res.status(404).json({
             "message": "Spot couldn't be found"
         })
-    };
+    } else {
+        let totalRating = 0;
+        let divider = currentSpot.Reviews.length
+        for (let i = 0; i < currentSpot.Reviews.length; i++) {
+            let rating = currentSpot.Reviews[i].stars;
+            totalRating += rating
+        }
+        let avgRating = Math.round((totalRating / divider) * 10) / 10;
+        let splitCreate = currentSpot.createdAt.toISOString().split('T').join(' ');
+        let createdAt = splitCreate.split('.')[0];
+        let splitUpdate = currentSpot.updatedAt.toISOString().split('T').join(' ');
+        let updatedAt = splitUpdate.split('.')[0];
+        let spotInfo = {
+            id: currentSpot.id,
+            ownerId: currentSpot.ownerId,
+            address: currentSpot.address,
+            city: currentSpot.city,
+            state: currentSpot.state,
+            country: currentSpot.country,
+            lat: currentSpot.lat,
+            lng: currentSpot.lng,
+            name: currentSpot.name,
+            description: currentSpot.description,
+            price: currentSpot.price,
+            createdAt,
+            updatedAt,
+            numReviews: divider,
+            avgStarRating: avgRating,
+            SpotImages: currentSpot.SpotImages,
+            Owner: currentSpot.Owner
+        }
 
-    return res.json(currentSpot);
+
+        return res.json(spotInfo);
+    }
+
 
    }
 )
@@ -444,9 +581,13 @@ router.post(
         const spot = await Spot.findByPk(spotId);
 
         if (!spot) {
-            res.status(404).send({
+            return res.status(404).send({
                 "message": "Spot couldn't be found"
             })
+        } else if (spot.ownerId !== req.user.id) {
+            return res.status(403).json({
+                message: "Forbidden"
+            });
         } else {
             const newSpotImage = await SpotImage.create({
                 spotId,
@@ -496,7 +637,29 @@ router.post(
             return res.status(400).json(errorMsg);
         }
 
-        return res.status(201).json(newSpot);
+        let splitCreate = newSpot.createdAt.toISOString().split('T').join(' ');
+        let createdAt = splitCreate.split('.')[0];
+
+        let splitUpdate = newSpot.updatedAt.toISOString().split('T').join(' ');
+        let updatedAt = splitUpdate.split('.')[0];
+
+        const result = {
+            id: newSpot.id,
+            ownerId: newSpot.ownerId,
+            address: newSpot.address,
+            city: newSpot.city,
+            state: newSpot.state,
+            country: newSpot.country,
+            lat: newSpot.lat,
+            lng: newSpot.lng,
+            name: newSpot.name,
+            description: newSpot.description,
+            price: newSpot.price,
+            createdAt,
+            updatedAt
+        }
+
+        return res.status(201).json(result);
     }
 )
 
@@ -515,6 +678,10 @@ router.put(
             return res.status(404).send({
                 "message": "Spot couldn't be found"
             })
+        } else if (updateSpot.ownerId !== req.user.id) {
+            return res.status(403).json({
+                message: "Forbidden"
+            });
         } else {
             await updateSpot.update({
                 address,
@@ -541,9 +708,32 @@ router.put(
                 }
 
                 return res.status(400).json(errorMsg);
+            } else {
+                let splitCreate = updateSpot.createdAt.toISOString().split('T').join(' ');
+                let createdAt = splitCreate.split('.')[0];
+
+                let splitUpdate = updateSpot.updatedAt.toISOString().split('T').join(' ');
+                let updatedAt = splitUpdate.split('.')[0];
+
+                const result = {
+                    id: updateSpot.id,
+                    ownerId: updateSpot.ownerId,
+                    address: updateSpot.address,
+                    city: updateSpot.city,
+                    state: updateSpot.state,
+                    country: updateSpot.country,
+                    lat: updateSpot.lat,
+                    lng: updateSpot.lng,
+                    name: updateSpot.name,
+                    description: updateSpot.description,
+                    price: updateSpot.price,
+                    createdAt,
+                    updatedAt
+                }
+
+                return res.json(result);
             }
 
-            return res.json(updateSpot);
         }
 
     }
@@ -559,9 +749,13 @@ router.delete(
         const deleteSpot = await Spot.findByPk(spotId);
 
         if (!deleteSpot) {
-            res.status(404).send({
-                "message": "Spot couldn't be found"
+            return res.status(404).json({
+                message: "Spot couldn't be found"
             })
+        } else if (deleteSpot.ownerId !== req.user.id) {
+            return res.status(403).json({
+                message: "Forbidden"
+            });
         } else {
             await deleteSpot.destroy();
 

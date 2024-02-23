@@ -106,7 +106,7 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         checkMinMax(value) {
           if (value > 180 || value < -180) {
-            throw new Error('Latitude must be within -180 and 180');
+            throw new Error('Longitude must be within -180 and 180');
           }
         }
       }
