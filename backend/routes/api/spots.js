@@ -97,7 +97,38 @@ router.get(
             }
         }
 
-        if (maxPrice) {
+        if (minPrice && maxPrice) {
+            if (!isNaN(Number(minPrice)) && !isNaN(Number(maxPrice))) {
+                if (Number(minPrice) < 0 || Number(maxPrice) < 0) {
+                    if (Number(minPrice) < 0) {
+                        errors.minPrice = "Minimum price must be greater than or equal to 0"
+                    }
+
+                    if (Number(maxPrice) < 0) {
+                        errors.maxPrice = "Maximum price must be greater than or equal to 0"
+                    }
+                } else if (Number(minPrice) > Number(maxPrice)) {
+                    errors.price = "Minimum price must be smaller than maximum price"
+                } else {
+                    where.price = {
+                        [Op.between]: [Number(minPrice), Number(maxPrice)]
+                    }
+                }
+            } else {
+                if (isNaN(Number(maxPrice))) {
+                        errors.maxPrice = "Maximum price is invalid"
+                } else if (Number(maxPrice) < 0) {
+                        errors.maxPrice = "Maximum price must be greater than or equal to 0"
+                }
+
+                if (isNaN(Number(minPrice))) {
+                    errors.minPrice = "Minimum price is invalid"
+                } else if (Number(minPrice) < 0) {
+                        errors.minPrice = "Minimum price must be greater than or equal to 0"
+                }
+
+            }
+        } else if (maxPrice) {
             if (isNaN(Number(maxPrice))) {
                 errors.maxPrice = "Maximum price is invalid"
             } else if (Number(maxPrice) < 0) {
@@ -107,9 +138,7 @@ router.get(
                     [Op.lte]: Number(maxPrice)
                 }
             }
-        }
-
-        if (minPrice) {
+        } else if (minPrice) {
             if (isNaN(Number(minPrice))) {
                 errors.minPrice = "Minimum price is invalid"
             } else if (Number(minPrice) < 0) {
@@ -134,23 +163,18 @@ router.get(
                 include: [
                     {
                         model: Review,
-                        attributes: ['stars']
+                        attributes: ['stars'],
+                        required: false
                     },
                     {
                         model: SpotImage,
                         attributes: ['url'],
                         where: {
                             preview: true
-                        }
-                    }
+                        },
+                        required: false
+                    },
                 ],
-
-                // attributes: [
-                //     [sequelize.fn('AVG', sequelize.col('Review.stars')), 'avgRating']
-                // ],
-
-                // group: ['Spot.id'],
-                //raw: true
             });
 
             if (allSpots.length === 0) {
@@ -162,39 +186,70 @@ router.get(
                 const spots = [];
                 for (let i = 0; i < allSpots.length; i++) {
                     let totalRating = 0;
-                    let divider = allSpots[i].Reviews.length
-                    for (let j = 0; j < allSpots[i].Reviews.length; j++) {
-                        let rating = allSpots[i].Reviews[j].stars;
-                        totalRating += rating;
-                    }
-                    let avgRating = Math.round((totalRating / divider) * 10) / 10;
-
+                    let divider;
+                    let avgRating;
 
                     let splitCreate = allSpots[i].createdAt.toISOString().split('T').join(' ');
                     let createdAt = splitCreate.split('.')[0];
-
                     let splitUpdate = allSpots[i].updatedAt.toISOString().split('T').join(' ');
                     let updatedAt = splitUpdate.split('.')[0];
 
 
-                    let spotInfo = {
-                        id: allSpots[i].id,
-                        ownerId: allSpots[i].ownerId,
-                        address: allSpots[i].address,
-                        city: allSpots[i].city,
-                        state: allSpots[i].state,
-                        country: allSpots[i].country,
-                        lat: allSpots[i].lat,
-                        lng: allSpots[i].lng,
-                        name: allSpots[i].name,
-                        description: allSpots[i].description,
-                        price: allSpots[i].price,
-                        createdAt,
-                        updatedAt,
-                        avgRating,
-                        previewImage: allSpots[i].SpotImages[0].url
+                    if (allSpots[i].Reviews) {
+                        divider = allSpots[i].Reviews.length
+                        for (let j = 0; j <= allSpots[i].Reviews.length; j++) {
+                            if (allSpots[i].Reviews[j]) {
+                                let rating = allSpots[i].Reviews[j].stars;
+                                totalRating += rating;
+                            }
+                        }
+                        avgRating = Math.round((totalRating / divider) * 10) / 10;
+                    } else {
+                        divider = 0;
+                        avgRating = 0;
                     }
-                    spots.push(spotInfo)
+
+
+
+                    if (!allSpots[i].SpotImages[0]) {
+                        let spotInfo = {
+                            id: allSpots[i].id,
+                            ownerId: allSpots[i].ownerId,
+                            address: allSpots[i].address,
+                            city: allSpots[i].city,
+                            state: allSpots[i].state,
+                            country: allSpots[i].country,
+                            lat: allSpots[i].lat,
+                            lng: allSpots[i].lng,
+                            name: allSpots[i].name,
+                            description: allSpots[i].description,
+                            price: allSpots[i].price,
+                            createdAt,
+                            updatedAt,
+                            avgRating,
+                            previewImage: null
+                        }
+                        spots.push(spotInfo)
+                    } else {
+                        let spotInfo = {
+                            id: allSpots[i].id,
+                            ownerId: allSpots[i].ownerId,
+                            address: allSpots[i].address,
+                            city: allSpots[i].city,
+                            state: allSpots[i].state,
+                            country: allSpots[i].country,
+                            lat: allSpots[i].lat,
+                            lng: allSpots[i].lng,
+                            name: allSpots[i].name,
+                            description: allSpots[i].description,
+                            price: allSpots[i].price,
+                            createdAt,
+                            updatedAt,
+                            avgRating,
+                            previewImage: allSpots[i].SpotImages[0].url
+                        }
+                        spots.push(spotInfo)
+                    }
                 }
 
                 return res.json({
@@ -218,14 +273,16 @@ router.get(
             include: [
                 {
                     model: Review,
-                    attributes: ['stars']
+                    attributes: ['stars'],
+                    required: false
                 },
                 {
                     model: SpotImage,
                     attributes: ['url'],
                     where: {
                         preview: true
-                    }
+                    },
+                    required: false
                 }
             ],
         });
@@ -233,34 +290,68 @@ router.get(
         const spots = [];
         for (let i = 0; i < allSpots.length; i++) {
             let totalRating = 0;
-            let divider = allSpots[i].Reviews.length
-            for (let j = 0; j < allSpots[i].Reviews.length; j++) {
-                let rating = allSpots[i].Reviews[j].stars;
-                totalRating += rating;
-            }
-            let avgRating = Math.round((totalRating / divider) * 10) / 10;
+            let divider;
+            let avgRating;
+
             let splitCreate = allSpots[i].createdAt.toISOString().split('T').join(' ');
             let createdAt = splitCreate.split('.')[0];
             let splitUpdate = allSpots[i].updatedAt.toISOString().split('T').join(' ');
             let updatedAt = splitUpdate.split('.')[0];
-            let spotInfo = {
-                id: allSpots[i].id,
-                ownerId: allSpots[i].ownerId,
-                address: allSpots[i].address,
-                city: allSpots[i].city,
-                state: allSpots[i].state,
-                country: allSpots[i].country,
-                lat: allSpots[i].lat,
-                lng: allSpots[i].lng,
-                name: allSpots[i].name,
-                description: allSpots[i].description,
-                price: allSpots[i].price,
-                createdAt,
-                updatedAt,
-                avgRating,
-                previewImage: allSpots[i].SpotImages[0].url
+
+            if (allSpots[i].Reviews) {
+                divider = allSpots[i].Reviews.length
+                for (let j = 0; j <= allSpots[i].Reviews.length; j++) {
+                    if (allSpots[i].Reviews[j]) {
+                        let rating = allSpots[i].Reviews[j].stars;
+                        totalRating += rating;
+                    }
+                }
+
+                avgRating = Math.round((totalRating / divider) * 10) / 10;
+            } else {
+                divider = 0;
+                avgRating = 0;
             }
-                spots.push(spotInfo)
+
+            if (!allSpots[i].SpotImages[0]) {
+                let spotInfo = {
+                    id: allSpots[i].id,
+                    ownerId: allSpots[i].ownerId,
+                    address: allSpots[i].address,
+                    city: allSpots[i].city,
+                    state: allSpots[i].state,
+                    country: allSpots[i].country,
+                    lat: allSpots[i].lat,
+                    lng: allSpots[i].lng,
+                    name: allSpots[i].name,
+                    description: allSpots[i].description,
+                    price: allSpots[i].price,
+                    createdAt,
+                    updatedAt,
+                    avgRating,
+                    previewImage: null
+                }
+                    spots.push(spotInfo)
+            } else {
+                let spotInfo = {
+                    id: allSpots[i].id,
+                    ownerId: allSpots[i].ownerId,
+                    address: allSpots[i].address,
+                    city: allSpots[i].city,
+                    state: allSpots[i].state,
+                    country: allSpots[i].country,
+                    lat: allSpots[i].lat,
+                    lng: allSpots[i].lng,
+                    name: allSpots[i].name,
+                    description: allSpots[i].description,
+                    price: allSpots[i].price,
+                    createdAt,
+                    updatedAt,
+                    avgRating,
+                    previewImage: allSpots[i].SpotImages[0].url
+                }
+                    spots.push(spotInfo)
+            }
             }
 
             return res.json({
@@ -529,6 +620,12 @@ router.post(
 
                     if ((reqEndDate === currSpotEndDate || reqEndDate === currSpotStartDate) ||
                         (reqEndDate > currSpotStartDate && reqEndDate < currSpotEndDate)) {
+                            conflictErrors.endDate = "End date conflicts with an existing booking"
+                        }
+
+                    if ((reqStartDate < currSpotStartDate && reqEndDate > currSpotEndDate) ||
+                        (reqStartDate > currSpotStartDate && reqEndDate < currSpotEndDate)) {
+                            conflictErrors.startDate = "Start date conflicts with an existing booking"
                             conflictErrors.endDate = "End date conflicts with an existing booking"
                         }
 

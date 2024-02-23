@@ -18,7 +18,6 @@ router.put(
         const {bookingId} = req.params;
         const {startDate, endDate} = req.body;
         const errors = {};
-
         const findBooking = await Booking.findByPk(bookingId);
 
         if (!findBooking) {
@@ -38,7 +37,7 @@ router.put(
                 where: {
                     spotId: findBooking.spotId
                 },
-                attributes: ['startDate', 'endDate']
+                attributes: ['id', 'startDate', 'endDate']
             })
 
             if (currSpotBookings.length > 0) {
@@ -52,16 +51,25 @@ router.put(
 
                     //REFACTOR BOOKING CONFLICT CODE TO ACCOUNT FOR DATES THAT SURROUND AN EXISTING BOOKING AND DATES THAT ARE WITHIN
                     //AN EXISTING BOOKING
-                    if ((reqStartDate === currSpotStartDate || reqStartDate === currSpotEndDate) ||
+                    if (currSpotBookings[i].id !== Number(bookingId)) {
+                        
+                        if ((reqStartDate === currSpotStartDate || reqStartDate === currSpotEndDate) ||
                         (reqStartDate > currSpotStartDate && reqStartDate < currSpotEndDate) ||
                         (reqStartDate < currSpotStartDate && reqStartDate > currSpotEndDate)) {
                             conflictErrors.startDate = "Start date conflicts with an existing booking"
                         }
 
-                    if ((reqEndDate === currSpotEndDate || reqEndDate === currSpotStartDate) ||
+                        if ((reqEndDate === currSpotEndDate || reqEndDate === currSpotStartDate) ||
                         (reqEndDate > currSpotStartDate && reqEndDate < currSpotEndDate)) {
                             conflictErrors.endDate = "End date conflicts with an existing booking"
                         }
+
+                        if ((reqStartDate < currSpotStartDate && reqEndDate > currSpotEndDate) ||
+                        (reqStartDate > currSpotStartDate && reqEndDate < currSpotEndDate)) {
+                            conflictErrors.startDate = "Start date conflicts with an existing booking"
+                            conflictErrors.endDate = "End date conflicts with an existing booking"
+                        }
+                    }
 
                     if (Object.keys(conflictErrors).length > 0) {
                         const errorMsg = {
