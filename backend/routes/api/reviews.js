@@ -167,7 +167,6 @@ router.get(
                 }
             ]
         });
-
         const reviews = [];
                 for (let i = 0; i < allUserReviews.length; i++) {
 

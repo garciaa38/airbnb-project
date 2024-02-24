@@ -74,11 +74,11 @@ app.use((err, _req, res, _next) => {
       }
       res.json(response);
     } else {
-      const response = {
-        message: err.message,
-        errors: err.errors
-      }
-      res.json(response);
+      // const response = {
+      //   message: err.message,
+      //   errors: err.errors
+      // }
+      res.json(err.errors);
     }
     // res.json({
     //   title: err.title || 'Server Error',

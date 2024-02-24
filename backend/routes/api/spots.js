@@ -25,35 +25,11 @@ router.get(
         // console.log('maxPrice', req.query.maxPrice, typeof req.query.maxPrice)
 
         if (req.query.page === '') {
-            errors.page = "Page query is invalid"
+           req.query.page = 1;
         }
 
         if (req.query.size === '') {
-            errors.size = "Size query is invalid"
-        }
-
-        if (req.query.minLat === '') {
-            errors.minLat = "Minimum latitude is invalid"
-        }
-
-        if (req.query.maxLat === '') {
-            errors.maxLat = "Maximum latitude is invalid"
-        }
-
-        if (req.query.minLng === '') {
-            errors.minLng = "Minimum longitude is invalid"
-        }
-
-        if (req.query.maxLng === '') {
-            errors.maxLng = "Maximum longitude is invalid"
-        }
-
-        if (req.query.minPrice === '') {
-            errors.minPrice = "Minimum price must be greater than or equal to 0"
-        }
-
-        if (req.query.maxPrice === '') {
-            errors.maxPrice = "Maximum price must be greater than or equal to 0"
+            req.query.size = 20;
         }
 
         let page = req.query.page === undefined || null ? 1 : parseInt(req.query.page);
