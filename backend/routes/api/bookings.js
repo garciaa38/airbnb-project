@@ -10,7 +10,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
-//EDIT A BOOKING --- NOT COMPLETE
+//EDIT A BOOKING --- COMPLETE
 router.put(
     '/:bookingId',
     requireAuth,
@@ -120,7 +120,7 @@ router.put(
 )
 
 
-//GET ALL OF CURRENT USER BOOKINGS --- NOT COMPLETE
+//GET ALL OF CURRENT USER BOOKINGS --- COMPLETE
 router.get(
     '/current',
     requireAuth,
@@ -166,8 +166,8 @@ router.get(
                             city: usersBookings[i].Spot.city,
                             state: usersBookings[i].Spot.state,
                             country: usersBookings[i].Spot.country,
-                            lat: usersBookings[i].Spot.lat,
-                            lng: usersBookings[i].Spot.lng,
+                            lat: Number(usersBookings[i].Spot.lat),
+                            lng: Number(usersBookings[i].Spot.lng),
                             name: usersBookings[i].Spot.name,
                             price: usersBookings[i].Spot.price,
                             previewImage: usersBookings[i].Spot.SpotImages[0].url,
@@ -187,7 +187,7 @@ router.get(
     }
 )
 
-//DELETE A BOOKING --- NOT COMPLETE
+//DELETE A BOOKING --- COMPLETE
 router.delete(
     '/:bookingId',
     requireAuth,

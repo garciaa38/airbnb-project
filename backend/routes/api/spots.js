@@ -9,8 +9,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 
 const router = express.Router();
-//GET ALL SPOTS --- NOT COMPLETE
-//--- Still need to add AVGRATING and PREVIEWIMAGE to Spots table
+//GET ALL SPOTS --- COMPLETE
 router.get(
     '/',
     async (req, res) => {
@@ -255,8 +254,8 @@ router.get(
                             city: allSpots[i].city,
                             state: allSpots[i].state,
                             country: allSpots[i].country,
-                            lat: allSpots[i].lat,
-                            lng: allSpots[i].lng,
+                            lat: Number(allSpots[i].lat),
+                            lng: Number(allSpots[i].lng),
                             name: allSpots[i].name,
                             description: allSpots[i].description,
                             price: allSpots[i].price,
@@ -274,8 +273,8 @@ router.get(
                             city: allSpots[i].city,
                             state: allSpots[i].state,
                             country: allSpots[i].country,
-                            lat: allSpots[i].lat,
-                            lng: allSpots[i].lng,
+                            lat: Number(allSpots[i].lat),
+                            lng: Number(allSpots[i].lng),
                             name: allSpots[i].name,
                             description: allSpots[i].description,
                             price: allSpots[i].price,
@@ -302,8 +301,7 @@ router.get(
     }
 )
 
-//GET ALL SPOTS OWNED BY CURRENT USER --- NOT COMPLETE
-//--- Still need to add AVGRATING and PREVIEWIMAGE to Spots table
+//GET ALL SPOTS OWNED BY CURRENT USER --- COMPLETE
 router.get(
     '/current',
     requireAuth,
@@ -363,8 +361,8 @@ router.get(
                     city: allSpots[i].city,
                     state: allSpots[i].state,
                     country: allSpots[i].country,
-                    lat: allSpots[i].lat,
-                    lng: allSpots[i].lng,
+                    lat: Number(allSpots[i].lat),
+                    lng: Number(allSpots[i].lng),
                     name: allSpots[i].name,
                     description: allSpots[i].description,
                     price: allSpots[i].price,
@@ -382,8 +380,8 @@ router.get(
                     city: allSpots[i].city,
                     state: allSpots[i].state,
                     country: allSpots[i].country,
-                    lat: allSpots[i].lat,
-                    lng: allSpots[i].lng,
+                    lat: Number(allSpots[i].lat),
+                    lng: Number(allSpots[i].lng),
                     name: allSpots[i].name,
                     description: allSpots[i].description,
                     price: allSpots[i].price,
@@ -402,7 +400,7 @@ router.get(
     }
 )
 
-//GET ALL BOOKINGS FOR A SPOT BASED ON SPOT ID --- NOT COMPLETE
+//GET ALL BOOKINGS FOR A SPOT BASED ON SPOT ID --- COMPLETE
 router.get(
     '/:spotId/bookings',
     requireAuth,
@@ -477,8 +475,7 @@ router.get(
     }
 )
 
-//GET ALL REVIEWS BY SPOT ID --- NOT COMPLETE
-//--- Still need to test with ReviewImages and complete Spot table
+//GET ALL REVIEWS BY SPOT ID --- COMPLETE
 router.get(
     '/:spotId/reviews',
     async (req, res) => {
@@ -545,8 +542,7 @@ router.get(
 )
 
 
-//GET ALL SPOTS BY SPOT ID --- NOT COMPLETE
-//--- Still need to add AVGRATING, PREVIEWIMAGE, and NUMREVIEWS to Spots table
+//GET ALL SPOTS BY SPOT ID --- COMPLETE
 router.get(
    '/:spotId',
    async (req, res) => {
@@ -596,8 +592,8 @@ router.get(
             city: currentSpot.city,
             state: currentSpot.state,
             country: currentSpot.country,
-            lat: currentSpot.lat,
-            lng: currentSpot.lng,
+            lat: Number(currentSpot.lat),
+            lng: Number(currentSpot.lng),
             name: currentSpot.name,
             description: currentSpot.description,
             price: currentSpot.price,
@@ -617,7 +613,7 @@ router.get(
    }
 )
 
-//CREATE BOOKING FOR SPOT BASED ON SPOT ID --- NOT COMPLETE
+//CREATE BOOKING FOR SPOT BASED ON SPOT ID --- COMPLETE
 router.post(
     '/:spotId/bookings',
     requireAuth,
@@ -651,9 +647,6 @@ router.post(
                     const currSpotEndDate = new Date(currSpotBookings[i].endDate).toISOString().split('T')[0];
                     const reqStartDate = new Date(startDate).toISOString().split('T')[0];
                     const reqEndDate = new Date(endDate).toISOString().split('T')[0];
-
-                    //REFACTOR BOOKING CONFLICT CODE TO ACCOUNT FOR DATES THAT SURROUND AN EXISTING BOOKING AND DATES THAT ARE WITHIN
-                    //AN EXISTING BOOKING
 
                     if ((reqStartDate === currSpotStartDate || reqStartDate === currSpotEndDate) ||
                         (reqStartDate > currSpotStartDate && reqStartDate < currSpotEndDate)) {
@@ -721,7 +714,7 @@ router.post(
     }
 )
 
-//CREATE REVIEW FOR SPOT BASED ON SPOT ID --- NOT COMPLETE
+//CREATE REVIEW FOR SPOT BASED ON SPOT ID --- COMPLETE
 router.post(
     '/:spotId/reviews',
     requireAuth,

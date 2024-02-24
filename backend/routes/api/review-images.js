@@ -11,7 +11,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 const router = express.Router();
 
 
-//DELETE A REVIEW IMAGE --- NOT COMPLETE
+//DELETE A REVIEW IMAGE --- COMPLETE
 router.delete(
     '/:imageId',
     requireAuth,

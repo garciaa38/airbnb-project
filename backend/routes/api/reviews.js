@@ -11,7 +11,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 const router = express.Router();
 
 
-//ADD AN IMAGE TO A REVIEW BASED ON REVIEW ID --- NOT COMPLETE
+//ADD AN IMAGE TO A REVIEW BASED ON REVIEW ID --- COMPLETE
 router.post(
     '/:reviewId/images',
     requireAuth,
@@ -74,7 +74,7 @@ router.post(
     }
 )
 
-//EDIT A REVIEW --- NOT COMPLETE
+//EDIT A REVIEW --- COMPLETE
 router.put(
     '/:reviewId',
     requireAuth,
@@ -134,8 +134,7 @@ router.put(
 )
 
 
-//GET ALL REVIEWS OF CURRENT USER --- NOT COMPLETE
-//--- Still need to test with ReviewImages and with completed Spot table.
+//GET ALL REVIEWS OF CURRENT USER --- COMPLETE
 router.get(
     '/current',
     requireAuth,
@@ -195,8 +194,8 @@ router.get(
                             city: allUserReviews[i].Spot.city,
                             state: allUserReviews[i].Spot.state,
                             country: allUserReviews[i].Spot.country,
-                            lat: allUserReviews[i].Spot.lat,
-                            lng: allUserReviews[i].Spot.lng,
+                            lat: Number(allUserReviews[i].Spot.lat),
+                            lng: Number(allUserReviews[i].Spot.lng),
                             name: allUserReviews[i].Spot.name,
                             price: allUserReviews[i].Spot.price,
                             previewImage: allUserReviews[i].Spot.SpotImages[0].url,
@@ -212,7 +211,7 @@ router.get(
     }
 )
 
-//DELETE A REVIEW --- NOT COMPLETE
+//DELETE A REVIEW --- COMPLETE
 router.delete(
     '/:reviewId',
     requireAuth,
