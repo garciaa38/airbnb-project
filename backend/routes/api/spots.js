@@ -26,14 +26,10 @@ router.get(
 
         if (req.query.page === '') {
            req.query.page = 1;
-        } else if (isNaN(parseInt(req.query.page))) {
-            errors.page = "Page must be an integer!"
         }
 
         if (req.query.size === '') {
             req.query.size = 20;
-        } else if (isNaN(parseInt(req.query.size))) {
-            errors.size = "Size must be an integer!"
         }
 
         let page = req.query.page === undefined || null ? 1 : parseInt(req.query.page);
@@ -51,11 +47,15 @@ router.get(
             query.limit = size;
             query.offset = size * (page - 1);
         } else {
-            if (page <= 0) {
+            if (isNaN(parseInt(page))) {
+                errors.page = "Page must be an integer!"
+            } else if (page <= 0) {
                 errors.page = "Page must be greater than or equal to 1"
             }
 
-            if (size <= 0) {
+            if (isNaN(parseInt(size))) {
+                errors.size = "Size must be an integer!"
+            } else if (size <= 0) {
                 errors.size = "Size must be great than or equal to 1"
             }
         }
