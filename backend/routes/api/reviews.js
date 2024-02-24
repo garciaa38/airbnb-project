@@ -197,7 +197,7 @@ router.get(
                             lat: Number(allUserReviews[i].Spot.lat),
                             lng: Number(allUserReviews[i].Spot.lng),
                             name: allUserReviews[i].Spot.name,
-                            price: allUserReviews[i].Spot.price,
+                            price: Number(allUserReviews[i].Spot.price),
                             previewImage: allUserReviews[i].Spot.SpotImages[0].url,
                         },
                         ReviewImages: allUserReviews[i].ReviewImages

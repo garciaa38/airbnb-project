@@ -15,14 +15,14 @@ router.get(
     async (req, res) => {
         const query = {};
         const errors = {};
-        console.log('PAGE', req.query.page, typeof req.query.page)
-        console.log('SIZE', req.query.size, typeof req.query.size)
-        console.log('minLat', req.query.minLat, typeof req.query.minLat)
-        console.log('maxLat', req.query.maxLat, typeof req.query.maxLat)
-        console.log('minLng', req.query.minLng, typeof req.query.minLng)
-        console.log('maxLng', req.query.maxLng, typeof req.query.maxLng)
-        console.log('minPrice', req.query.minPrice, typeof req.query.minPrice)
-        console.log('maxPrice', req.query.maxPrice, typeof req.query.maxPrice)
+        // console.log('PAGE', req.query.page, typeof req.query.page)
+        // console.log('SIZE', req.query.size, typeof req.query.size)
+        // console.log('minLat', req.query.minLat, typeof req.query.minLat)
+        // console.log('maxLat', req.query.maxLat, typeof req.query.maxLat)
+        // console.log('minLng', req.query.minLng, typeof req.query.minLng)
+        // console.log('maxLng', req.query.maxLng, typeof req.query.maxLng)
+        // console.log('minPrice', req.query.minPrice, typeof req.query.minPrice)
+        // console.log('maxPrice', req.query.maxPrice, typeof req.query.maxPrice)
 
         if (req.query.page === '') {
             errors.page = "Page query is invalid"
@@ -130,7 +130,7 @@ router.get(
         if (minPrice && maxPrice) {
 
             if (!isNaN(parseInt(minPrice)) && !isNaN(parseInt(maxPrice))) {
-                //console.log('TEST');
+
                 if (Number(minPrice) < 0 || Number(maxPrice) < 0) {
                     if (Number(minPrice) < 0) {
                         errors.minPrice = "Minimum price must be greater than or equal to 0"
@@ -258,7 +258,7 @@ router.get(
                             lng: Number(allSpots[i].lng),
                             name: allSpots[i].name,
                             description: allSpots[i].description,
-                            price: allSpots[i].price,
+                            price: Number(allSpots[i].price),
                             createdAt,
                             updatedAt,
                             avgRating,
@@ -277,7 +277,7 @@ router.get(
                             lng: Number(allSpots[i].lng),
                             name: allSpots[i].name,
                             description: allSpots[i].description,
-                            price: allSpots[i].price,
+                            price: Number(allSpots[i].price),
                             createdAt,
                             updatedAt,
                             avgRating,
@@ -365,7 +365,7 @@ router.get(
                     lng: Number(allSpots[i].lng),
                     name: allSpots[i].name,
                     description: allSpots[i].description,
-                    price: allSpots[i].price,
+                    price: Number(allSpots[i].price),
                     createdAt,
                     updatedAt,
                     avgRating,
@@ -384,7 +384,7 @@ router.get(
                     lng: Number(allSpots[i].lng),
                     name: allSpots[i].name,
                     description: allSpots[i].description,
-                    price: allSpots[i].price,
+                    price: Number(allSpots[i].price),
                     createdAt,
                     updatedAt,
                     avgRating,
@@ -596,7 +596,7 @@ router.get(
             lng: Number(currentSpot.lng),
             name: currentSpot.name,
             description: currentSpot.description,
-            price: currentSpot.price,
+            price: Number(currentSpot.price),
             createdAt,
             updatedAt,
             numReviews: divider,
@@ -888,7 +888,7 @@ router.post(
             lng: Number(newSpot.lng),
             name: newSpot.name,
             description: newSpot.description,
-            price: newSpot.price,
+            price: Number(newSpot.price),
             createdAt,
             updatedAt
         }
@@ -960,7 +960,7 @@ router.put(
                     lng: Number(updateSpot.lng),
                     name: updateSpot.name,
                     description: updateSpot.description,
-                    price: updateSpot.price,
+                    price: Number(updateSpot.price),
                     createdAt,
                     updatedAt
                 }

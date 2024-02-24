@@ -169,7 +169,7 @@ router.get(
                             lat: Number(usersBookings[i].Spot.lat),
                             lng: Number(usersBookings[i].Spot.lng),
                             name: usersBookings[i].Spot.name,
-                            price: usersBookings[i].Spot.price,
+                            price: Number(usersBookings[i].Spot.price),
                             previewImage: usersBookings[i].Spot.SpotImages[0].url,
                         },
                         userId: usersBookings[i].userId,
