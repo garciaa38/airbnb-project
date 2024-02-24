@@ -16,17 +16,49 @@ router.get(
     async (req, res) => {
         const query = {};
         const errors = {};
+        console.log('PAGE', req.query.page, typeof req.query.page)
+        console.log('SIZE', req.query.size, typeof req.query.size)
+        console.log('minLat', req.query.minLat, typeof req.query.minLat)
+        console.log('maxLat', req.query.maxLat, typeof req.query.maxLat)
+        console.log('minLng', req.query.minLng, typeof req.query.minLng)
+        console.log('maxLng', req.query.maxLng, typeof req.query.maxLng)
+        console.log('minPrice', req.query.minPrice, typeof req.query.minPrice)
+        console.log('maxPrice', req.query.maxPrice, typeof req.query.maxPrice)
 
-        let page = req.query.page === undefined ? 1 : parseInt(req.query.page);
-        let size = req.query.size === undefined ? 20 : parseInt(req.query.size);
-
-        if (isNaN(page)) {
+        if (req.query.page === '') {
             errors.page = "Page query is invalid"
         }
 
-        if (isNaN(size)) {
+        if (req.query.size === '') {
             errors.size = "Size query is invalid"
         }
+
+        if (req.query.minLat === '') {
+            errors.minLat = "Minimum latitude is invalid"
+        }
+
+        if (req.query.maxLat === '') {
+            errors.maxLat = "Maximum latitude is invalid"
+        }
+
+        if (req.query.minLng === '') {
+            errors.minLng = "Minimum longitude is invalid"
+        }
+
+        if (req.query.maxLng === '') {
+            errors.maxLng = "Maximum longitude is invalid"
+        }
+
+        if (req.query.minPrice === '') {
+            errors.minPrice = "Minimum price must be greater than or equal to 0"
+        }
+
+        if (req.query.maxPrice === '') {
+            errors.maxPrice = "Maximum price must be greater than or equal to 0"
+        }
+
+        let page = req.query.page === undefined || null ? 1 : parseInt(req.query.page);
+        let size = req.query.size === undefined || null ? 20 : parseInt(req.query.size);
 
         if (page > 10) {
             page = 10;
@@ -52,10 +84,9 @@ router.get(
         const where = {};
 
         const {maxLat, minLat, maxLng, minLng, maxPrice, minPrice} = req.query;
-
         if (maxLat) {
-            if (Number(maxLat) > 90 ||
-            isNaN(Number(maxLat))) {
+
+            if (isNaN(parseInt(maxLat))) {
                 errors.maxLat = "Maximum latitude is invalid"
             } else {
                 where.lat = {
@@ -65,8 +96,8 @@ router.get(
         }
 
         if (minLat) {
-            if (Number(minLat) < -90 ||
-            isNaN(Number(minLat))) {
+
+            if (isNaN(parseInt(minLat))) {
                 errors.minLat = "Minimum latitude is invalid"
             } else {
                 where.lat = {
@@ -76,8 +107,8 @@ router.get(
         }
 
         if (maxLng) {
-            if (Number(maxLng) > 180 ||
-            isNaN(Number(maxLng))) {
+
+            if (isNaN(parseInt(maxLng))) {
                 errors.maxLng = "Maximum longitude is invalid"
             } else {
                 where.lng = {
@@ -87,8 +118,8 @@ router.get(
         }
 
         if (minLng) {
-            if (Number(minLng) < -180 ||
-            isNaN(Number(minLng))) {
+
+            if (isNaN(parseInt(minLng))) {
                 errors.minLng = "Minimum longitude is invalid"
             } else {
                 where.lng = {
@@ -98,7 +129,9 @@ router.get(
         }
 
         if (minPrice && maxPrice) {
-            if (!isNaN(Number(minPrice)) && !isNaN(Number(maxPrice))) {
+
+            if (!isNaN(parseInt(minPrice)) && !isNaN(parseInt(maxPrice))) {
+                //console.log('TEST');
                 if (Number(minPrice) < 0 || Number(maxPrice) < 0) {
                     if (Number(minPrice) < 0) {
                         errors.minPrice = "Minimum price must be greater than or equal to 0"
@@ -115,13 +148,13 @@ router.get(
                     }
                 }
             } else {
-                if (isNaN(Number(maxPrice))) {
+                if (isNaN(parseInt(maxPrice))) {
                         errors.maxPrice = "Maximum price is invalid"
                 } else if (Number(maxPrice) < 0) {
                         errors.maxPrice = "Maximum price must be greater than or equal to 0"
                 }
 
-                if (isNaN(Number(minPrice))) {
+                if (isNaN(parseInt(minPrice))) {
                     errors.minPrice = "Minimum price is invalid"
                 } else if (Number(minPrice) < 0) {
                         errors.minPrice = "Minimum price must be greater than or equal to 0"
@@ -129,7 +162,8 @@ router.get(
 
             }
         } else if (maxPrice) {
-            if (isNaN(Number(maxPrice))) {
+
+            if (isNaN(parseInt(maxPrice))) {
                 errors.maxPrice = "Maximum price is invalid"
             } else if (Number(maxPrice) < 0) {
                 errors.maxPrice = "Maximum price must be greater than or equal to 0"
@@ -138,8 +172,10 @@ router.get(
                     [Op.lte]: Number(maxPrice)
                 }
             }
+
         } else if (minPrice) {
-            if (isNaN(Number(minPrice))) {
+
+            if (isNaN(parseInt(minPrice))) {
                 errors.minPrice = "Minimum price is invalid"
             } else if (Number(minPrice) < 0) {
                 errors.minPrice = "Minimum price must be greater than or equal to 0"
@@ -251,7 +287,13 @@ router.get(
                         spots.push(spotInfo)
                     }
                 }
-
+                if (page || size) {
+                    return res.json({
+                        Spots: spots,
+                        page,
+                        size
+                    });
+                }
                 return res.json({
                     Spots: spots
                 });

@@ -21,15 +21,15 @@ router.put(
         const findBooking = await Booking.findByPk(bookingId);
 
         if (!findBooking) {
-            res.status(404).json({
+            return res.status(404).json({
                 message: "Booking couldn't be found"
             })
         } else if (findBooking.userId !== req.user.id) {
-            res.status(403).json({
+            return res.status(403).json({
                 message: "Forbidden"
             })
         } else if (new Date().toISOString().split('T')[0] > new Date(findBooking.endDate).toISOString().split('T')[0]) {
-            res.status(403).json({
+            return res.status(403).json({
                 message: "Past bookings can't be modified"
             })
         } else {
@@ -52,7 +52,7 @@ router.put(
                     //REFACTOR BOOKING CONFLICT CODE TO ACCOUNT FOR DATES THAT SURROUND AN EXISTING BOOKING AND DATES THAT ARE WITHIN
                     //AN EXISTING BOOKING
                     if (currSpotBookings[i].id !== Number(bookingId)) {
-                        
+
                         if ((reqStartDate === currSpotStartDate || reqStartDate === currSpotEndDate) ||
                         (reqStartDate > currSpotStartDate && reqStartDate < currSpotEndDate) ||
                         (reqStartDate < currSpotStartDate && reqStartDate > currSpotEndDate)) {
