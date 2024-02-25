@@ -266,7 +266,7 @@ router.get(
                         spots.push(spotInfo)
                     }
                 }
-                if (page || size) {
+                if (req.query.page || req.query.size) {
                     return res.json({
                         Spots: spots,
                         page,
