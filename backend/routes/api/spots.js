@@ -56,7 +56,7 @@ router.get(
             if (isNaN(parseInt(size))) {
                 errors.size = "Size must be an integer!"
             } else if (size <= 0) {
-                errors.size = "Size must be great than or equal to 1"
+                errors.size = "Size must be greater than or equal to 1"
             }
         }
 
