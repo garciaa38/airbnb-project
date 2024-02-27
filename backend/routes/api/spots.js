@@ -312,7 +312,7 @@ router.get(
             let totalRating = 0;
             let divider;
             let avgRating;
-
+            
             let splitCreate = allSpots[i].createdAt.toISOString().split('T').join(' ');
             let createdAt = splitCreate.split('.')[0];
             let splitUpdate = allSpots[i].updatedAt.toISOString().split('T').join(' ');
