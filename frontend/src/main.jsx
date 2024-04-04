@@ -7,6 +7,12 @@ import configureStore from './store';
 
 const store = configureStore();
 
+
+//REMOVE THIS BEFORE DEPLOYMENT OF PROJECT!!!!!!!!!!!!!
+if (process.env.NODE_ENV !== 'production') {
+  window.store = store;
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
