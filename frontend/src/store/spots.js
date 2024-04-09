@@ -1,5 +1,8 @@
+import { csrfFetch } from './csrf';
+
 export const LOAD_SPOTS = 'spots/LOAD_SPOTS'
 export const LOAD_SPOT = 'spots/LOAD_SPOT'
+export const ADD_SPOT = 'spots/ADD_SPOT'
 
 //ACTION CREATORS
 export const loadSpots = (spots) => ({
@@ -16,7 +19,7 @@ export const loadOneSpot = (spot) => ({
 
 //FETCH ALL SPOTS
 export const fetchSpots = () => async dispatch => {
-    const res = await fetch('/api/spots');
+    const res = await csrfFetch('/api/spots');
 
     if (res.ok) {
         const spots = await res.json();
@@ -27,7 +30,7 @@ export const fetchSpots = () => async dispatch => {
 //FETCH SPOT BY ID
 export const spotDetails = (spotId) => async dispatch => {
     try {
-        const res = await fetch(`/api/spots/${spotId}`);
+        const res = await csrfFetch(`/api/spots/${spotId}`);
     
         if (res.ok) {
             const spot = await res.json();
@@ -37,6 +40,23 @@ export const spotDetails = (spotId) => async dispatch => {
         }
     } catch (error) {
         console.error("Error fetching spot details:", error)
+    }
+}
+
+//CREATE A SPOT
+export const addSpot = (spot) => async dispatch => {
+    console.log('NEW SPOT', spot)
+    const res = await csrfFetch(`/api/spots`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(spot)
+    })
+    console.log('RES', res)
+    if (res.ok) {
+        const newSpot = await res.json();
+        dispatch(loadOneSpot(newSpot))
+    } else {
+        console.error("Please complete spot form!")
     }
 }
 

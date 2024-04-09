@@ -1,3 +1,5 @@
+import { csrfFetch } from './csrf';
+
 export const LOAD_REVIEWS = 'reviews/LOAD_REVIEWS'
 
 //ACTION CREATORS
@@ -10,7 +12,7 @@ export const loadReviews = (reviews) => ({
 
 //FETCH SPOT REVIEWS
 export const fetchSpotReviews = (spotId) => async dispatch => {
-    const res = await fetch(`/api/spots/${Number(spotId)}/reviews`);
+    const res = await csrfFetch(`/api/spots/${Number(spotId)}/reviews`);
 
     if (res.ok) {
         const reviews = await res.json();
