@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { addSpot } from '../../store/spots';
+import { addSpot, updateSpot } from '../../store/spots';
 import { addImage } from '../../store/spotImages';
 import './SpotForm.css'
 
@@ -12,20 +12,24 @@ export default function SpotForm({spot, formType}) {
     const [address, setAddress] = useState(spot?.address);
     const [city, setCity] = useState(spot?.city);
     const [state, setState] = useState(spot?.state);
-    const [latitude, setLatitude] = useState(spot?.latitude);
-    const [longitude, setLongitude] = useState(spot?.longitude);
+    const [latitude, setLatitude] = useState(spot?.lat);
+    const [longitude, setLongitude] = useState(spot?.lng);
     const [description, setDescription] = useState(spot?.description);
     const [name, setName] = useState(spot?.name);
     const [price, setPrice] = useState(spot?.price);
     const [spotImages, setSpotImages] = useState(spot?.SpotImages);
-    const [spotImageLinks, setSpotImageLinks] = useState({})
+    //const [spotImageLinks, setSpotImageLinks] = useState({})
     const [errors, setErrors] = useState({});
 
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        setSpotImages(Object.values(spotImageLinks));
-    }, [spotImageLinks])
+    // useEffect(() => {
+    //     setSpotImages(Object.values(spotImageLinks));
+    // }, [spotImageLinks])
+
+    for (let i = 0; i < spotImages.length; i++) {
+        spotImages[i].tempId = i.toString();
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -43,13 +47,14 @@ export default function SpotForm({spot, formType}) {
         if (description.length < 30) errorHandle.description = "Description needs a minimum of 30 characters"
         if (name === "") errorHandle.name = "Name is required"
         if (price === "") errorHandle.price = "Price is required"
-        if (!spotImages[0]?.url || spotImages[0]?.id !== '0') errorHandle.previewImage = "Preview image is required"
-        console.log("ARRAY OF SPOT IMAGES BEFORE LOOP", spotImages)
-        if (spotImages.length) {
-            for (let i = 0; i < spotImages.length; i++) {
-                const imgKey = spotImages[i].id
+        if (!spotImages[0]?.url || spotImages[0]?.tempId !== '0') errorHandle.previewImage = "Preview image is required"
+        const spotImgArr = Object.values(spotImages);
+        console.log("ARRAY OF SPOT IMAGES BEFORE LOOP", spotImgArr)
+        if (spotImgArr.length) {
+            for (let i = 0; i < spotImgArr.length; i++) {
+                const imgKey = spotImgArr[i].tempId
                 console.log('IMAGE KEY', imgKey)
-                const img = spotImages[i].url
+                const img = spotImgArr[i].url
                 if (img || img.includes(' ')) {
                     const fileType = img.split('.')[img.split('.').length - 1];
                     if (fileType !== 'png' &&
@@ -61,7 +66,7 @@ export default function SpotForm({spot, formType}) {
                 }
             }
         }
-        console.log("ARRAY OF SPOT IMAGES AFTER LOOP", spotImages)
+        console.log("ARRAY OF SPOT IMAGES AFTER LOOP", spotImgArr)
 
         console.log('OBJECT OF ERRORS', errorHandle)
         setErrors(errorHandle);
@@ -80,11 +85,11 @@ export default function SpotForm({spot, formType}) {
         }
 
 
-        if (!Object.keys(errorHandle).length) {
+        if (!Object.keys(errorHandle).length && formType === "Create Spot") {
             setErrors({});
             const newSpotId = await dispatch(addSpot(spot));
 
-            spotImages.forEach(async spotImage => {
+            spotImgArr.forEach(async spotImage => {
                 if (spotImage.url.length) {
                     const dispatchedImg = {
                         url: spotImage.url,
@@ -96,6 +101,25 @@ export default function SpotForm({spot, formType}) {
             })
 
             navigate(`/spots/${newSpotId}`)
+        }
+
+        if (!Object.keys(errorHandle).length && formType === "Update Spot") {
+            setErrors({});
+            const spotId = spot.id;
+            await dispatch(updateSpot(spot, spotId));
+
+            spotImgArr.forEach(async spotImage => {
+                if (spotImage.url.length) {
+                    const dispatchedImg = {
+                        url: spotImage.url,
+                        preview: spotImage.preview
+                    }
+                    console.log('DISPATCHED IMAGE', dispatchedImg)
+                    await dispatch(addImage(spotId, dispatchedImg))
+                }
+            })
+
+            navigate(`/spots/${spotId}`)
         }
 
 
@@ -178,11 +202,12 @@ export default function SpotForm({spot, formType}) {
                 />
             </label>
             <div className='errors'>{errors.price}</div>
-            <label>
+            {/* <label>
                 Photos
                 <input
                 type="text"
-                value={spotImageLinks['0']?.url || ''}
+                value={spotImageLinks['0']?.url}
+                //value={spotImages[0]?.url}
                 onChange={(e) => setSpotImageLinks({...spotImageLinks,
                     '0': {
                     url: e.target.value,
@@ -194,7 +219,8 @@ export default function SpotForm({spot, formType}) {
                 <div className='errors'>{errors[`image0`]}</div>
                 <input
                 type="text"
-                value={spotImageLinks['1']?.url || ''}
+                value={spotImageLinks['1']?.url}
+                //value={spotImages[1]?.url}
                 onChange={(e) => setSpotImageLinks({...spotImageLinks,
                     '1': {
                     url: e.target.value,
@@ -205,7 +231,8 @@ export default function SpotForm({spot, formType}) {
                 <div className='errors'>{errors[`image1`]}</div>
                 <input
                 type="text"
-                value={spotImageLinks['2']?.url || ''}
+                value={spotImageLinks['2']?.url}
+                //value={spotImages[2]?.url}
                 onChange={(e) => setSpotImageLinks({...spotImageLinks,
                     '2': {
                     url: e.target.value,
@@ -216,7 +243,8 @@ export default function SpotForm({spot, formType}) {
                 <div className='errors'>{errors[`image2`]}</div>
                 <input
                 type="text"
-                value={spotImageLinks['3']?.url || ''}
+                value={spotImageLinks['3']?.url}
+                //value={spotImages[3]?.url}
                 onChange={(e) => setSpotImageLinks({...spotImageLinks,
                     '3': {
                     url: e.target.value,
@@ -227,12 +255,77 @@ export default function SpotForm({spot, formType}) {
                 <div className='errors'>{errors[`image3`]}</div>
                 <input
                 type="text"
-                value={spotImageLinks['4']?.url || ''}
+                value={spotImageLinks['4']?.url}
+                //value={spotImages[4]?.url}
                 onChange={(e) => setSpotImageLinks({...spotImageLinks,
                     '4': {
                     url: e.target.value,
                     preview: false,
                     id: '4'
+                }})}
+                />
+                <div className='errors'>{errors[`image4`]}</div>
+            </label> */}
+            <label>
+                Photos
+                <input
+                type="text"
+                //value={spotImageLinks['0']?.url}
+                value={spotImages[0]?.url}
+                onChange={(e) => setSpotImages({...spotImages,
+                    '0': {
+                    url: e.target.value,
+                    preview: true,
+                    tempId: '0'
+                }})}
+                />
+                <div className='errors'>{errors.previewImage}</div>
+                <div className='errors'>{errors[`image0`]}</div>
+                <input
+                type="text"
+                // value={spotImageLinks['1']?.url}
+                value={spotImages[1]?.url}
+                onChange={(e) => setSpotImages({...spotImages,
+                    '1': {
+                    url: e.target.value,
+                    preview: false,
+                    tempId: '1'
+                }})}
+                />
+                <div className='errors'>{errors[`image1`]}</div>
+                <input
+                type="text"
+                // value={spotImageLinks['2']?.url}
+                value={spotImages[2]?.url}
+                onChange={(e) => setSpotImages({...spotImages,
+                    '2': {
+                    url: e.target.value,
+                    preview: false,
+                    tempId: '2'
+                }})}
+                />
+                <div className='errors'>{errors[`image2`]}</div>
+                <input
+                type="text"
+                // value={spotImageLinks['3']?.url}
+                value={spotImages[3]?.url}
+                onChange={(e) => setSpotImages({...spotImages,
+                    '3': {
+                    url: e.target.value,
+                    preview: false,
+                    tempId: '3'
+                }})}
+                />
+                <div className='errors'>{errors[`image3`]}</div>
+                <input
+                type="text"
+                // value={spotImageLinks['4']?.url}
+                value={spotImages[4]?.url}
+                onChange={(e) => setSpotImages({...spotImages,
+                    '4': {
+                    url: e.target.value,
+                    preview: false,
+                    tempId: '4'
                 }})}
                 />
                 <div className='errors'>{errors[`image4`]}</div>

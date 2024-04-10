@@ -31,7 +31,6 @@ export default function SpotDetails() {
             SpotImages,
             name,
             Owner,
-            address,
             avgStarRating,
             city,
             state,

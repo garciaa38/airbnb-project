@@ -61,6 +61,22 @@ export const addSpot = (spot) => async dispatch => {
     }
 }
 
+//UPDATE A SPOT
+export const updateSpot = (spot, spotId) => async dispatch => {
+    const res = await csrfFetch(`/api/spots/${spotId}`, {
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(spot)
+    })
+
+    if (res.ok) {
+        const updatedSpot = await res.json();
+        dispatch(loadOneSpot(updatedSpot))
+    } else {
+        console.error("Please complete edit spot form!")
+    }
+}
+
 /** REDUCERS **/
 const spotsReducer = (state = {}, action) => {
     switch (action.type) {

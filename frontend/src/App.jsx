@@ -5,6 +5,7 @@ import SpotsIndex from './components/SpotsIndex/index';
 import SpotDetails from './components/SpotDetails/index';
 import Navigation from './components/Navigation';
 import CreateSpotForm from './components/CreateSpotForm';
+import UpdateSpotForm from './components/UpdateSpotForm';
 import * as sessionActions from './store/session';
 
 function Layout() {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: '/spots/new',
         element: <CreateSpotForm />
+      },
+      {
+        path: '/spots/:spotId/edit',
+        element: <UpdateSpotForm />
       }
     ]
   }
