@@ -55,6 +55,7 @@ export const addSpot = (spot) => async dispatch => {
     if (res.ok) {
         const newSpot = await res.json();
         dispatch(loadOneSpot(newSpot))
+        return newSpot.id
     } else {
         console.error("Please complete spot form!")
     }

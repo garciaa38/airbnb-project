@@ -1,5 +1,6 @@
 import { spotDetails } from "../../store/spots";
 import { fetchSpotReviews } from "../../store/reviews";
+//import { fetchSpotImages } from "../../store/spotImages";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";
@@ -11,57 +12,54 @@ export default function SpotDetails() {
     const dispatch = useDispatch();
     const spot = useSelector(state => state.spots[spotId])
     const reviews = Object.values(useSelector(state => state.reviews))
+    //const spotImages = Object.values(useSelector(state => state.spotImages))
     
     useEffect(() => {
         dispatch(spotDetails(spotId))
         dispatch(fetchSpotReviews(spotId))
+        //dispatch(fetchSpotImages(spotId))
     }, [dispatch, spotId])
-
-    console.log("SPOT", spot)
-    console.log("REVIEWS", reviews)
-    console.log("NumReviews", reviews.length)
+    
     
     if (!spot) {
         return (
             <h2>Loading...</h2>
+            )
+        }
+
+        const {
+            SpotImages,
+            name,
+            Owner,
+            address,
+            avgStarRating,
+            city,
+            state,
+            country,
+            description,
+            price
+        } = spot;
+
+    if (!Owner || !SpotImages) {
+        return (
+            <h2>Loading...</h2>
         )
     }
-    
-    const {
-        SpotImages,
-        name,
-        Owner,
-        address,
-        avgStarRating,
-        city,
-        state,
-        country,
-        description,
-        price
-    } = spot;
+        
+    //console.log('SPOT IMAGES FROM STATE', spotImages);
+    console.log('SPOT IMAGES FROM SPOT', SpotImages);
+    console.log(Owner)
 
     const numReviews = reviews.length
-
-    console.log("SpotImages", SpotImages)
-    console.log("Name", name)
-    console.log("Owner", Owner)
-    console.log("Address", address)
-    console.log("AvgStarRating", avgStarRating)
-    console.log("City", city)
-    console.log("State", state)
-    console.log("Country", country)
-    console.log("Description", description)
-    console.log("Price", price)
-
-
 
     return (
         <div>
             <h1>{name}</h1>
             <h2>{city}{state}{country}</h2>
-            {SpotImages.map(image => {
+            {SpotImages?.slice().reverse().map(image => {
+                console.log('MAPPED IMAGE', image)
                 return (
-                <div key={image.url}>
+                <div key={image.id}>
                     <img
                     src={image.url}
                     alt={`${name}'s image`}
