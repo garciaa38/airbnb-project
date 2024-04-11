@@ -1,4 +1,5 @@
 import { csrfFetch } from './csrf';
+import { createSelector } from 'reselect';
 
 const SET_USER = "session/setUser";
 const REMOVE_USER = "session/removeUser";
@@ -15,6 +16,12 @@ const removeUser = () => {
     type: REMOVE_USER
   };
 };
+
+const selectUser = state => state?.session;
+
+export const selectAllUsers = createSelector(selectUser, users => {
+  return users ? Object.values(users) : [];
+})
 
 export const login = (user) => async (dispatch) => {
   console.log("LOGIN", user)

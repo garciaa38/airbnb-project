@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import ReviewsIndex from '../ReviewsIndex/index';
 import SpotRating from '../SpotRating/index';
 import { selectAllReviews } from "../../store/reviews";
+import { selectAllUsers } from '../../store/session';
 
 
 export default function SpotDetails() {
@@ -14,6 +15,7 @@ export default function SpotDetails() {
     const spot = useSelector(state => state.spots[spotId])
     const reviews = Object.values(useSelector(state => state.reviews))
     const allReviews = useSelector(selectAllReviews);
+    const users = useSelector(selectAllUsers);
 
     const numReviews = allReviews.length;
 
@@ -26,6 +28,8 @@ export default function SpotDetails() {
     console.log('AVG RATING', avgRating)
 
     console.log('ALL REVIEWS', allReviews);
+
+    console.log('USERS', users)
     
     useEffect(() => {
         dispatch(spotDetails(spotId))
@@ -55,6 +59,18 @@ export default function SpotDetails() {
             <h2>Loading...</h2>
         )
     }
+
+    const disableReviewButton = () => {
+        const userReviewedSpot = allReviews.find(rev => rev.userId === users[0]?.id);
+        const userOwnsSpot = spot.Owner.id === users[0]?.id;
+
+        if (!users[0]) return true;
+        if (userReviewedSpot || userOwnsSpot) return true;
+
+        return false;
+    }
+
+    // console.log('IS THE USER DISABLED?', disableReviewButton())
         
     //console.log('SPOT IMAGES FROM STATE', spotImages);
     console.log('SPOT IMAGES FROM SPOT', SpotImages);
@@ -78,9 +94,18 @@ export default function SpotDetails() {
             <h3>Hosted by {Owner.firstName} {Owner.lastName}</h3>
             <p>{description}</p>
             <h4>${price} night</h4>
-            <SpotRating avgStarRating={avgRating} numReviews={numReviews}/>
+            <SpotRating 
+            avgStarRating={avgRating} 
+            numReviews={numReviews}
+            />
             <button>Reserve</button>
-            <ReviewsIndex reviews={reviews} avgStarRating={avgRating} spotId={spotId} numReviews={numReviews}/>
+            <ReviewsIndex 
+            reviews={reviews} 
+            avgStarRating={avgRating} 
+            spotId={spotId} 
+            numReviews={numReviews}
+            disableReviewButton={disableReviewButton()}
+            />
         </div>
     )
 }

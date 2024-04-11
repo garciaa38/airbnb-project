@@ -40,13 +40,11 @@ export const addReview = (review, spotId) => async dispatch => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(review)
     })
-
+    
     if (res.ok) {
         const newReview = await res.json();
         dispatch(loadOneReview(newReview))
         return newReview
-    } else {
-        console.error("Please complete review form!")
     }
 }
 
