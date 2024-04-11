@@ -1,23 +1,35 @@
 import { spotDetails } from "../../store/spots";
 import { fetchSpotReviews } from "../../store/reviews";
-//import { fetchSpotImages } from "../../store/spotImages";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";
 import ReviewsIndex from '../ReviewsIndex/index';
 import SpotRating from '../SpotRating/index';
+import { selectAllReviews } from "../../store/reviews";
+
 
 export default function SpotDetails() {
     const { spotId } = useParams();
     const dispatch = useDispatch();
     const spot = useSelector(state => state.spots[spotId])
     const reviews = Object.values(useSelector(state => state.reviews))
-    //const spotImages = Object.values(useSelector(state => state.spotImages))
+    const allReviews = useSelector(selectAllReviews);
+
+    const numReviews = allReviews.length;
+
+    const totalRating = allReviews.reduce((total, review) => total + review.stars, 0);
+
+    const avgRating = Math.round((totalRating / numReviews) * 10) / 10;
+
+    console.log(totalRating)
+    
+    console.log('AVG RATING', avgRating)
+
+    console.log('ALL REVIEWS', allReviews);
     
     useEffect(() => {
         dispatch(spotDetails(spotId))
         dispatch(fetchSpotReviews(spotId))
-        //dispatch(fetchSpotImages(spotId))
     }, [dispatch, spotId])
     
     
@@ -31,7 +43,6 @@ export default function SpotDetails() {
             SpotImages,
             name,
             Owner,
-            avgStarRating,
             city,
             state,
             country,
@@ -48,8 +59,6 @@ export default function SpotDetails() {
     //console.log('SPOT IMAGES FROM STATE', spotImages);
     console.log('SPOT IMAGES FROM SPOT', SpotImages);
     console.log(Owner)
-
-    const numReviews = reviews.length
 
     return (
         <div>
@@ -69,9 +78,9 @@ export default function SpotDetails() {
             <h3>Hosted by {Owner.firstName} {Owner.lastName}</h3>
             <p>{description}</p>
             <h4>${price} night</h4>
-            <SpotRating avgStarRating={avgStarRating} numReviews={numReviews}/>
+            <SpotRating avgStarRating={avgRating} numReviews={numReviews}/>
             <button>Reserve</button>
-            <ReviewsIndex reviews={reviews} avgStarRating={avgStarRating}/>
+            <ReviewsIndex reviews={reviews} avgStarRating={avgRating} spotId={spotId} numReviews={numReviews}/>
         </div>
     )
 }

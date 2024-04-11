@@ -1,11 +1,24 @@
 import { csrfFetch } from './csrf';
+import { createSelector } from 'reselect';
 
 export const LOAD_REVIEWS = 'reviews/LOAD_REVIEWS'
+export const LOAD_REVIEW = 'reviews/LOAD_REVIEW'
 
 //ACTION CREATORS
 export const loadReviews = (reviews) => ({
     type: LOAD_REVIEWS,
     reviews
+});
+
+export const loadOneReview = (review) => ({
+    type: LOAD_REVIEW,
+    review
+})
+
+const selectReviews = state => state?.reviews
+
+export const selectAllReviews = createSelector(selectReviews, reviews => {
+    return reviews ? Object.values(reviews) : [];
 });
 
 /** THUNK ACTION CREATORS **/
@@ -20,6 +33,23 @@ export const fetchSpotReviews = (spotId) => async dispatch => {
     }
 }
 
+//CREATE REVIEW FOR SPOT
+export const addReview = (review, spotId) => async dispatch => {
+    const res = await csrfFetch(`/api/spots/${spotId}/reviews`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(review)
+    })
+
+    if (res.ok) {
+        const newReview = await res.json();
+        dispatch(loadOneReview(newReview))
+        return newReview
+    } else {
+        console.error("Please complete review form!")
+    }
+}
+
 /** REDUCERS **/
 const reviewsReducer = (state = {}, action) => {
     switch (action.type) {
@@ -29,6 +59,10 @@ const reviewsReducer = (state = {}, action) => {
                 reviewsState[review.id] = review;
             });
             return reviewsState;
+        }
+
+        case LOAD_REVIEW: {
+            return { ...state, [action.review.id]: action.review};
         }
 
         default:

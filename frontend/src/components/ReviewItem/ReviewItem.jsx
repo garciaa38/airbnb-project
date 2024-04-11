@@ -1,12 +1,20 @@
 export default function ReviewItem({reviewItem}) {
     console.log("REVIEW ITEM", reviewItem)
 
+
     const months = [
         'January', 'February', 'March',
         'April', 'May', 'June',
         'July', 'August', 'September',
         'October', 'November', 'December'
     ];
+
+    if (!reviewItem.User) {
+        return(
+            <></>
+        )
+    }
+    console.log('USER INFO', reviewItem.User)
 
     const { User, createdAt, review} = reviewItem;
     const { firstName } = User;

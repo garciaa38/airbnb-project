@@ -1,4 +1,5 @@
 import SpotForm from "../SpotForm"
+//import { addReview } from "../../store/reviews"
 
 export default function CreateSpotForm() {
     const spot = {
@@ -18,6 +19,7 @@ export default function CreateSpotForm() {
         <SpotForm
         spot={spot}
         formType="Create Spot"
+        //onSubmit={addReview}
         />
     )
 
