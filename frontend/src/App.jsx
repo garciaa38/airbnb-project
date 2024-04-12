@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet, useNavigate } from 'react-router-dom';
 import SpotsIndex from './components/SpotsIndex/index';
 import SpotDetails from './components/SpotDetails/index';
 import Navigation from './components/Navigation';
@@ -21,7 +21,7 @@ function Layout() {
 
   return (
     <>
-      <Navigation isLoaded={isLoaded} />
+      <Navigation isLoaded={isLoaded} navigate={useNavigate()} />
       {isLoaded && <Outlet />}
     </>
   );
