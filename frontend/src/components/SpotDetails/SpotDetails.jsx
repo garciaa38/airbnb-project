@@ -105,6 +105,7 @@ export default function SpotDetails() {
             spotId={spotId} 
             numReviews={numReviews}
             disableReviewButton={disableReviewButton()}
+            userId={users[0]?.id}
             />
         </div>
     )

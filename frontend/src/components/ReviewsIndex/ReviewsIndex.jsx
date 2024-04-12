@@ -6,8 +6,7 @@ import './ReviewsIndex.css'
 // import { useSelector } from "react-redux";
 // import { selectAllReviews } from "../../store/reviews";
 
-export default function ReviewsIndex({avgStarRating, reviews, spotId, numReviews, disableReviewButton}) {
-    //console.log('IS THE USER DISABLED HERE?', disableReviewButton)
+export default function ReviewsIndex({avgStarRating, reviews, spotId, numReviews, disableReviewButton, userId}) {
     return (
         <div>
             <SpotRating numReviews={numReviews} avgStarRating={avgStarRating}/>
@@ -18,7 +17,7 @@ export default function ReviewsIndex({avgStarRating, reviews, spotId, numReviews
             />
             {reviews.map(review => {
                 return (
-                    <ReviewItem key={review.id} reviewItem={review}/>
+                    <ReviewItem key={review.id} reviewItem={review} userId={userId}/>
                 )
             })}
         </div>

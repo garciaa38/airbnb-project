@@ -3,6 +3,7 @@ import { csrfFetch } from './csrf';
 export const LOAD_SPOTS = 'spots/LOAD_SPOTS'
 export const LOAD_SPOT = 'spots/LOAD_SPOT'
 export const ADD_SPOT = 'spots/ADD_SPOT'
+export const REMOVE_SPOT = 'spots/REMOVE_SPOT'
 
 //ACTION CREATORS
 export const loadSpots = (spots) => ({
@@ -13,6 +14,11 @@ export const loadSpots = (spots) => ({
 export const loadOneSpot = (spot) => ({
     type: LOAD_SPOT,
     spot
+})
+
+export const removeSpot = (spotId) => ({
+    type: REMOVE_SPOT,
+    spotId
 })
 
 /** THUNK ACTION CREATORS **/
@@ -77,6 +83,18 @@ export const updateSpot = (spot, spotId) => async dispatch => {
     }
 }
 
+//DELETE A SPOT
+export const deleteSpot = (spotId) => async dispatch => {
+    const res = await csrfFetch(`/api/spots/${spotId}`, {
+        method: 'DELETE',
+        headers: {'Content-Type': 'application/json'},
+    })
+
+    if (res.ok) {
+        dispatch(removeSpot(spotId))
+    }
+}
+
 /** REDUCERS **/
 const spotsReducer = (state = {}, action) => {
     switch (action.type) {
@@ -90,6 +108,12 @@ const spotsReducer = (state = {}, action) => {
 
         case LOAD_SPOT: {
             return { ...state, [action.spot.id]: action.spot};
+        }
+
+        case REMOVE_SPOT: {
+            const newState = {...state};
+            delete newState[action.spotId];
+            return newState;
         }
 
         default:

@@ -3,6 +3,7 @@ import { createSelector } from 'reselect';
 
 export const LOAD_REVIEWS = 'reviews/LOAD_REVIEWS'
 export const LOAD_REVIEW = 'reviews/LOAD_REVIEW'
+export const REMOVE_REVIEW = 'reviews/REMOVE_REVIEW'
 
 //ACTION CREATORS
 export const loadReviews = (reviews) => ({
@@ -13,6 +14,11 @@ export const loadReviews = (reviews) => ({
 export const loadOneReview = (review) => ({
     type: LOAD_REVIEW,
     review
+})
+
+export const removeReview = (reviewId) => ({
+    type: REMOVE_REVIEW,
+    reviewId
 })
 
 const selectReviews = state => state?.reviews
@@ -48,6 +54,18 @@ export const addReview = (review, spotId) => async dispatch => {
     }
 }
 
+//DELETE A REVIEW
+export const deleteReview = (reviewId) => async dispatch => {
+    const res = await csrfFetch(`/api/reviews/${reviewId}`, {
+        method: 'DELETE',
+        headers: {'Content-Type': 'application/json'},
+    })
+
+    if (res.ok) {
+        dispatch(removeReview(reviewId))
+    }
+}
+
 /** REDUCERS **/
 const reviewsReducer = (state = {}, action) => {
     switch (action.type) {
@@ -61,6 +79,12 @@ const reviewsReducer = (state = {}, action) => {
 
         case LOAD_REVIEW: {
             return { ...state, [action.review.id]: action.review};
+        }
+
+        case REMOVE_REVIEW: {
+            const newState = {...state};
+            delete newState[action.reviewId];
+            return newState
         }
 
         default:

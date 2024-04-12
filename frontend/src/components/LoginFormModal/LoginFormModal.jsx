@@ -20,6 +20,7 @@ function LoginFormModal() {
         const data = await res.json();
         if (data && data.errors) {
           setErrors(data.errors);
+          console.log("LOGIN ERRORS", data.errors)
         }
       });
   };
@@ -27,6 +28,7 @@ function LoginFormModal() {
   return (
     <>
       <h1>Log In</h1>
+      <p className='errors'>{errors.message}</p>
       <form onSubmit={handleSubmit}>
         <label>
           Username or Email
@@ -49,7 +51,11 @@ function LoginFormModal() {
         {errors.credential && (
           <p>{errors.credential}</p>
         )}
-        <button type="submit">Log In</button>
+        <button 
+        type="submit"
+        disabled={credential.length < 4 || password.length < 6}
+        >Log In
+        </button>
       </form>
     </>
   );

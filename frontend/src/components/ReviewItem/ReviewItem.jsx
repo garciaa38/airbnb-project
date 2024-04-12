@@ -1,5 +1,7 @@
-export default function ReviewItem({reviewItem}) {
-    console.log("REVIEW ITEM", reviewItem)
+import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
+import DeleteReviewModal from "../DeleteReviewModal/index";
+
+export default function ReviewItem({reviewItem, userId}) {
 
 
     const months = [
@@ -14,7 +16,10 @@ export default function ReviewItem({reviewItem}) {
             <></>
         )
     }
+
+    console.log('REVIEW INFO', reviewItem)
     console.log('USER INFO', reviewItem.User)
+    console.log('USER ID', userId)
 
     const { User, createdAt, review} = reviewItem;
     const { firstName } = User;
@@ -31,6 +36,7 @@ export default function ReviewItem({reviewItem}) {
             <h2>{firstName}</h2>
             <h2>{reviewDate}</h2>
             <h2>{review}</h2>
+            {userId === reviewItem.User.id && <OpenModalMenuItem itemText="Delete" modalComponent={<DeleteReviewModal reviewId={reviewItem.id}/>}/>}
         </div>
     )
 }
