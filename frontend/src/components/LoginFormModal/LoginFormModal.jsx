@@ -29,7 +29,7 @@ function LoginFormModal({navigate}) {
   return (
     <>
       <h1>Log In</h1>
-      <p className='errors'>{errors.message}</p>
+      {errors.message && <p className='errors'>{`The provided credentials were invalid`}</p>}
       <form onSubmit={handleSubmit}>
         <label>
           Username or Email
@@ -52,6 +52,21 @@ function LoginFormModal({navigate}) {
         {errors.credential && (
           <p>{errors.credential}</p>
         )}
+        <button
+        onClick={() => {
+          setCredential("DemoOwner1");
+          setPassword("password");
+          return dispatch(sessionActions.login({ credential, password }))
+                .then(closeModal)
+                .then(navigate("/"))
+                .catch(async (res) => {
+                const data = await res.json();
+                if (data && data.errors) {
+                  setErrors(data.errors);
+                }
+            });
+        }}
+        >Demo User</button>
         <button 
         type="submit"
         disabled={credential.length < 4 || password.length < 6}

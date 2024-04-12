@@ -50,7 +50,7 @@ function ProfileButton({ user, navigate }) {
         {user ? (
           <>
             <li>{user.username}</li>
-            <li>{user.firstName} {user.lastName}</li>
+            <li>Hello {user.firstName}</li>
             <li>{user.email}</li>
             <li>
               <button>Manage Spots</button>

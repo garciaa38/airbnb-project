@@ -28,14 +28,15 @@ function SignupFormModal({navigate}) {
           password
         })
       )
-        .then(closeModal)
-        .then(navigate("/"))
-        .catch(async (res) => {
-          const data = await res.json();
-          if (data?.errors) {
-            setErrors(data.errors);
-          }
-        });
+      .then(navigate("/"))
+      .then(closeModal)
+      .catch(async (res) => {
+        const data = await res.json();
+        console.log(data)
+        if (data?.errors) {
+          setErrors(data.errors);
+        }
+      })
     }
     return setErrors({
       confirmPassword: "Confirm Password field must be the same as the Password field"
@@ -112,11 +113,11 @@ function SignupFormModal({navigate}) {
         <button 
         type="submit"
         disabled={email.length <= 0 ||
-                  username.length <= 0 ||
+                  username.length <= 3 ||
                   firstName.length <= 0 ||
                   lastName.length <= 0 ||
-                  password.length <= 0 ||
-                  confirmPassword <= 0
+                  password.length <= 5 ||
+                  confirmPassword <= 5
                 }
         >Sign Up
         </button>

@@ -33,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
 
       username: {
         type: DataTypes.STRING,
+        unique: true,
         allowNull: false,
         validate: {
           len: [4, 30],
@@ -69,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
         attributes: {
           exclude: ["hashedPassword", "email", "createdAt", "updatedAt"]
         }
-      }
+      },
     }
   );
   return User;
