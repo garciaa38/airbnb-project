@@ -9,9 +9,8 @@ export default function SpotRating({avgStarRating, numReviews}) {
     }
 
     return (
-        <div>
-            <h2>{avgStarRating}</h2>
-            <h3>{numReviews}</h3>
+        <div className="spot-rating">
+            <h4>{avgStarRating} - {numReviews} reviews</h4>
         </div>
     )
 }

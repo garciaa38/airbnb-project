@@ -11,47 +11,50 @@ function LoginFormModal({navigate}) {
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setErrors({});
-    return dispatch(sessionActions.login({ credential, password }))
-    .then(closeModal)
-    .then(navigate("/"))
-      .catch(async (res) => {
-        const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
-        }
-      });
-
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  setErrors({});
+  
+  try {
+    await dispatch(sessionActions.login({ credential, password }));
+    closeModal();
+    navigate("/");
+  } catch (err) {
+    const data = await err.json();
+    console.log(data.errors)
+    if (data && data.errors) {
+      setErrors(data.errors);
+    }
+  }
   };
 
   return (
-    <>
+    <div className="login">
       <h1>Log In</h1>
       {errors.message && <p className='errors'>{`The provided credentials were invalid`}</p>}
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username or Email
+      <form onSubmit={handleSubmit} className="form">
           <input
             type="text"
+            placeholder="Username or Email"
             value={credential}
             onChange={(e) => setCredential(e.target.value)}
             required
           />
-        </label>
-        <label>
-          Password
           <input
             type="password"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </label>
         {errors.credential && (
           <p>{errors.credential}</p>
         )}
+        <button 
+        type="submit"
+        disabled={credential.length < 4 || password.length < 6}
+        >Log In
+        </button>
         <button
         onClick={() => {
           setCredential("DemoOwner1");
@@ -67,13 +70,8 @@ function LoginFormModal({navigate}) {
             });
         }}
         >Demo User</button>
-        <button 
-        type="submit"
-        disabled={credential.length < 4 || password.length < 6}
-        >Log In
-        </button>
       </form>
-    </>
+    </div>
   );
 }
 

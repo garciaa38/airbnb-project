@@ -7,6 +7,7 @@ import ReviewsIndex from '../ReviewsIndex/index';
 import SpotRating from '../SpotRating/index';
 import { selectAllReviews } from "../../store/reviews";
 import { selectAllUsers } from '../../store/session';
+import './SpotDetails.css'
 
 
 export default function SpotDetails() {
@@ -76,29 +77,47 @@ export default function SpotDetails() {
     console.log('SPOT IMAGES FROM SPOT', SpotImages);
     console.log(Owner)
 
+    let counter = 0;
+
     return (
-        <div>
+        <>
+        <div className="spot-details">
             <h1>{name}</h1>
-            <h2>{city}{state}{country}</h2>
-            {SpotImages?.slice().reverse().map(image => {
+            <h2>{city}, {state}, {country}</h2>
+            <div className="spot-images">
+            {SpotImages?.map(image => {
                 console.log('MAPPED IMAGE', image)
+                counter++;
+                console.log(counter)
                 return (
-                <div key={image.id}>
                     <img
+                    key={image.id}
+                    className={`pos${counter}`}
                     src={image.url}
                     alt={`${name}'s image`}
                     />
-                </div>
                 )
             })}
-            <h3>Hosted by {Owner.firstName} {Owner.lastName}</h3>
-            <p>{description}</p>
-            <h4>${price} night</h4>
-            <SpotRating 
-            avgStarRating={avgRating} 
-            numReviews={numReviews}
-            />
-            <button>Reserve</button>
+            </div>
+            <div className="spot-desc-and-rating">
+                <div className="spot-host">
+                    <h3>Hosted by {Owner.firstName} {Owner.lastName}</h3>
+                    <p>{description}</p>
+                </div>
+                <div className="spot-reserve">
+                    <div className="spot-reserve-top">
+                        <h4>${price} night</h4>
+                        <SpotRating 
+                        avgStarRating={avgRating} 
+                        numReviews={numReviews}
+                        />
+                    </div>
+                    <div className="reserve">
+                        <button>Reserve</button>
+                    </div>
+                </div>
+            </div>
+        </div>
             <ReviewsIndex 
             reviews={reviews} 
             avgStarRating={avgRating} 
@@ -107,6 +126,6 @@ export default function SpotDetails() {
             disableReviewButton={disableReviewButton()}
             userId={users[0]?.id}
             />
-        </div>
+            </>
     )
 }
