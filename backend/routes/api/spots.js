@@ -15,14 +15,6 @@ router.get(
     async (req, res) => {
         const query = {};
         const errors = {};
-        // console.log('PAGE', req.query.page, typeof req.query.page)
-        // console.log('SIZE', req.query.size, typeof req.query.size)
-        // console.log('minLat', req.query.minLat, typeof req.query.minLat)
-        // console.log('maxLat', req.query.maxLat, typeof req.query.maxLat)
-        // console.log('minLng', req.query.minLng, typeof req.query.minLng)
-        // console.log('maxLng', req.query.maxLng, typeof req.query.maxLng)
-        // console.log('minPrice', req.query.minPrice, typeof req.query.minPrice)
-        // console.log('maxPrice', req.query.maxPrice, typeof req.query.maxPrice)
 
         if (req.query.page === '') {
            req.query.page = 1;
@@ -774,8 +766,6 @@ router.post(
         const {spotId} = req.params;
         const {url, preview} = req.body;
 
-        console.log(preview)
-
         const spot = await Spot.findByPk(spotId);
 
         if (!spot) {
@@ -788,7 +778,6 @@ router.post(
             });
         } else {
             if (preview === true) {
-                console.log(preview)
                 const checkSpotImages = await SpotImage.findAll({
                     where: {
                         spotId,

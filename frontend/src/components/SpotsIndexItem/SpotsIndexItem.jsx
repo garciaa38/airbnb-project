@@ -1,5 +1,6 @@
 import OpenModalMenuItem from "../Navigation/OpenModalMenuItem";
 import DeleteSpotModal from "../DeleteSpotModal";
+import { NavLink } from 'react-router-dom';
 
 export default function SpotsIndexItem({spot, user}) {
     const {previewImage, name, city, state, avgRating, price, id} = spot;
@@ -19,7 +20,7 @@ export default function SpotsIndexItem({spot, user}) {
                 </div>
                 <h3>${price} night</h3>
             </div>
-            {user === true && <button>Update</button>}
+            {user === true && <NavLink to={`/spots/${id}/edit`}>Update</NavLink>}
             {user === true && <OpenModalMenuItem itemText="Delete" modalComponent={<DeleteSpotModal spotId={id}/>}/>}
         </div>
     )

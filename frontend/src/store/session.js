@@ -24,7 +24,6 @@ export const selectAllUsers = createSelector(selectUser, users => {
 })
 
 export const login = (user) => async (dispatch) => {
-  console.log("LOGIN", user)
   const { credential, password } = user;
   const response = await csrfFetch("/api/session", {
     method: "POST",
@@ -34,7 +33,6 @@ export const login = (user) => async (dispatch) => {
     })
   });
   const data = await response.json();
-  console.log("DATA", data)
   dispatch(setUser(data.user));
   return response;
 };

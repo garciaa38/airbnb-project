@@ -14,23 +14,20 @@ export default function SpotDetails() {
     const { spotId } = useParams();
     const dispatch = useDispatch();
     const spot = useSelector(state => state.spots[spotId])
-    const reviews = Object.values(useSelector(state => state.reviews))
-    const allReviews = useSelector(selectAllReviews);
+    let reviews = Object.values(useSelector(state => state.reviews))
+    let allReviews = useSelector(selectAllReviews);
     const users = useSelector(selectAllUsers);
+    
+    if (reviews[0]?.spotId !== Number(spotId)) {
+        reviews = [];
+        allReviews = [];
+    }
 
     const numReviews = allReviews.length;
 
     const totalRating = allReviews.reduce((total, review) => total + review.stars, 0);
 
     const avgRating = Math.round((totalRating / numReviews) * 10) / 10;
-
-    console.log(totalRating)
-    
-    console.log('AVG RATING', avgRating)
-
-    console.log('ALL REVIEWS', allReviews);
-
-    console.log('USERS', users)
     
     useEffect(() => {
         dispatch(spotDetails(spotId))
@@ -71,13 +68,19 @@ export default function SpotDetails() {
         return false;
     }
 
-    // console.log('IS THE USER DISABLED?', disableReviewButton())
-        
-    //console.log('SPOT IMAGES FROM STATE', spotImages);
-    console.log('SPOT IMAGES FROM SPOT', SpotImages);
-    console.log(Owner)
-
     let counter = 0;
+
+    console.log('ALL REVIEWS',allReviews);
+    allReviews.forEach(rev => console.log("CHECKING REV SPOT ID", rev.spotId))
+    console.log("CHECKING SPOT ID", Number(spotId))
+    allReviews.forEach(rev => console.log("CHECKING IF REV BELONGS HERE", rev.spotId === Number(spotId)))
+
+    console.log('ALL REVIEWS 2',reviews);
+    reviews.forEach(rev => console.log("CHECKING REV SPOT ID 2", rev.spotId))
+    console.log("CHECKING SPOT ID 2", Number(spotId))
+    reviews.forEach(rev => console.log("CHECKING IF REV BELONGS HERE 2", rev.spotId === Number(spotId)))
+
+    
 
     return (
         <>
@@ -86,9 +89,7 @@ export default function SpotDetails() {
             <h2>{city}, {state}, {country}</h2>
             <div className="spot-images">
             {SpotImages?.map(image => {
-                console.log('MAPPED IMAGE', image)
                 counter++;
-                console.log(counter)
                 return (
                     <img
                     key={image.id}
@@ -113,7 +114,7 @@ export default function SpotDetails() {
                         />
                     </div>
                     <div className="reserve">
-                        <button>Reserve</button>
+                        <button onClick={() => alert("Feature coming soon!")}>Reserve</button>
                     </div>
                 </div>
             </div>

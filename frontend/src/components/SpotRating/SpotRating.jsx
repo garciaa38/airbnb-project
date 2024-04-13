@@ -1,16 +1,18 @@
+import { FaRegStar } from 'react-icons/fa';
+
 export default function SpotRating({avgStarRating, numReviews}) {
     
     if (!avgStarRating){
         return (
             <div>
-                New
+               <FaRegStar /> New
             </div>
         )
     }
 
     return (
         <div className="spot-rating">
-            <h4>{avgStarRating} - {numReviews} reviews</h4>
+            <h4><FaRegStar />{avgStarRating} - {numReviews} reviews</h4>
         </div>
     )
 }

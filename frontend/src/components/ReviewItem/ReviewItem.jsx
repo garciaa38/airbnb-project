@@ -17,10 +17,6 @@ export default function ReviewItem({reviewItem, userId}) {
         )
     }
 
-    console.log('REVIEW INFO', reviewItem)
-    console.log('USER INFO', reviewItem.User)
-    console.log('USER ID', userId)
-
     const { User, createdAt, review} = reviewItem;
     const { firstName } = User;
 
@@ -29,7 +25,6 @@ export default function ReviewItem({reviewItem, userId}) {
     const month = months[date[1] - 1];
     const reviewDate = month + ' ' + year;
 
-    console.log('REVIEW DATE', reviewDate)
 
     return (
         <div>

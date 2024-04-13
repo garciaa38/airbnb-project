@@ -195,7 +195,6 @@ router.delete(
         const {bookingId} = req.params;
 
         const deleteBooking = await Booking.findByPk(bookingId);
-        console.log(deleteBooking)
         if (!deleteBooking) {
             return res.status(404).json({
                 message: "Booking couldn't be found"

@@ -51,13 +51,11 @@ export const spotDetails = (spotId) => async dispatch => {
 
 //CREATE A SPOT
 export const addSpot = (spot) => async dispatch => {
-    console.log('NEW SPOT', spot)
     const res = await csrfFetch(`/api/spots`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(spot)
     })
-    console.log('RES', res)
     if (res.ok) {
         const newSpot = await res.json();
         dispatch(loadOneSpot(newSpot))

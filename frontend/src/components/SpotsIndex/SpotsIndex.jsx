@@ -10,16 +10,10 @@ export default function SpotsIndex({navigate}) {
     const spots = Object.values(useSelector(state => state.spots));
     const users = useSelector(selectAllUsers);
 
-    console.log('USERS', users)
 
     useEffect(() => {
         dispatch(fetchSpots())
     }, [dispatch]);
-
-    console.log('NAV',navigate)
-    console.log("FETCHED SPOTS", spots)
-    console.log("SPOT 2", spots[2])
-
 
     return (
         <div className="spot-grid">

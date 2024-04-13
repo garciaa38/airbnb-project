@@ -15,7 +15,6 @@ export default function ManageSpotsIndex() {
 
     if (spots && users[0] !== null) {
         const managedSpots = spots.filter(spot => spot.ownerId === users[0].id)
-        console.log("MANAGED SPOTS", managedSpots)
 
         if (managedSpots.length <= 0) {
             return (
