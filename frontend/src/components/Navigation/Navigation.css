@@ -1,3 +1,112 @@
 .hidden {
     display: none
 }
+
+.profile-dropdown {
+    position: absolute;
+    background-color: white;
+    max-width: 240px;
+    width: 100%;
+    max-height: 240px;
+    padding: 0;
+    border: 0.5px solid black;
+    border-radius: 5px;
+    box-shadow: 3px 3px 3px black
+}
+
+.profile-items {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 0;
+    margin: 0 0 0 0;
+    list-style-type: none;
+    overflow: hidden;
+}
+
+.profile-buttons li {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    overflow: hidden;
+}
+
+.profile-items li button {
+    width: 100%;
+    height: 100%;
+    padding: 10px 0;
+    border: none;
+    background: none;
+    outline: none;
+    transition: background-color 0.3s;
+}
+
+
+.profile-buttons li.manage-spots {
+    width: 100%;
+    text-align: center;
+}
+
+.profile-buttons li.manage-spots:hover,
+.profile-buttons li.logout-button:hover {
+    background-color: #f0f0f0;
+}
+
+.profile-buttons .signup-options {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 10px 0;
+    border: none;
+    background: none;
+    outline: none;
+    transition: background-color 0.3s;
+}
+
+.profile-buttons li.manage-spots a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 10px 0;
+    border: none;
+    background: none;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+.profile-buttons li.manage-spots a,
+.profile-buttons li.logout-button button {
+  width: 100%;
+  height: 100%;
+  padding: 10px 0;
+  border: none;
+  background: none;
+  outline: none;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+.profile-items .profile-select .signup-options:hover {
+    background-color: transparent;
+  }
+
+
+.profile-items li button:hover {
+    background-color: #f0f0f0;
+    overflow: hidden;
+}
+
+
+.profile-items .profile-select .profile-buttons li:first-child button {
+    border-radius: 5px 5px 0 0;
+}
+
+.profile-items .profile-select .profile-buttons:last-child li:last-child button {
+    border-radius: 0 0 5px 5px;
+}
+
+.profile-items ,profile-select .profile-buttons .logout-button {
+    border-radius: 0 0 5px 5px;
+}
