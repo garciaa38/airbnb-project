@@ -7,6 +7,8 @@ import './ReviewsIndex.css'
 // import { selectAllReviews } from "../../store/reviews";
 
 export default function ReviewsIndex({avgStarRating, reviews, spotId, numReviews, disableReviewButton, userId}) {
+    const reveredReviews = [...reviews].reverse();
+    
     return (
         <div>
             <SpotRating numReviews={numReviews} avgStarRating={avgStarRating}/>
@@ -15,7 +17,7 @@ export default function ReviewsIndex({avgStarRating, reviews, spotId, numReviews
             disabled={disableReviewButton}
             modalComponent={<CreateReviewForm spotId={spotId}/>}
             />
-            {reviews.map(review => {
+            {reveredReviews.map(review => {
                 return (
                     <ReviewItem key={review.id} reviewItem={review} userId={userId}/>
                 )

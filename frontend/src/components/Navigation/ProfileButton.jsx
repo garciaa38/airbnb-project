@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { FaUserCircle } from 'react-icons/fa';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
@@ -53,7 +53,7 @@ function ProfileButton({ user, navigate }) {
             <li>Hello, {user.firstName}</li>
             <li>{user.email}</li>
             <li>
-              <NavLink to="/spots/current">Manage Spots</NavLink>
+              <Link to="/spots/current">Manage Spots</Link>
               </li>
             <li>
               <button onClick={logout}>Log Out</button>

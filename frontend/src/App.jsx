@@ -44,13 +44,13 @@ const router = createBrowserRouter([
         element: <CreateSpotForm />
       },
       {
+        path: '/spots/current',
+        element: <ManageSpots />
+      },
+      {
         path: '/spots/:spotId/edit',
         element: <UpdateSpotForm />
       },
-      {
-        path: '/spots/current',
-        element: <ManageSpots />
-      }
     ]
   }
 ]);

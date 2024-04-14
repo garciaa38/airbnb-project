@@ -1,4 +1,4 @@
-import { spotDetails } from "../../store/spots";
+import { spotDetails, clearSpotDetails } from "../../store/spots";
 import { fetchSpotReviews } from "../../store/reviews";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,46 +18,51 @@ export default function SpotDetails() {
     let allReviews = useSelector(selectAllReviews);
     const users = useSelector(selectAllUsers);
     
+    
     if (reviews[0]?.spotId !== Number(spotId)) {
         reviews = [];
         allReviews = [];
     }
-
+    
     const numReviews = allReviews.length;
-
+    
     const totalRating = allReviews.reduce((total, review) => total + review.stars, 0);
-
+    
     const avgRating = Math.round((totalRating / numReviews) * 10) / 10;
     
     useEffect(() => {
         dispatch(spotDetails(spotId))
         dispatch(fetchSpotReviews(spotId))
+
+        return () => {
+            dispatch(clearSpotDetails());
+        }
     }, [dispatch, spotId])
     
     
     if (!spot) {
         return (
             <h2>Loading...</h2>
-            )
-        }
-
-        const {
-            SpotImages,
-            name,
-            Owner,
-            city,
-            state,
-            country,
-            description,
-            price
-        } = spot;
-
+        )
+    }
+    
+    const {
+        SpotImages,
+        name,
+        Owner,
+        city,
+        state,
+        country,
+        description,
+        price
+    } = spot;
+    
     if (!Owner || !SpotImages) {
         return (
             <h2>Loading...</h2>
         )
     }
-
+    
     const disableReviewButton = () => {
         const userReviewedSpot = allReviews.find(rev => rev.userId === users[0]?.id);
         const userOwnsSpot = spot.Owner.id === users[0]?.id;
@@ -69,18 +74,6 @@ export default function SpotDetails() {
     }
 
     let counter = 0;
-
-    console.log('ALL REVIEWS',allReviews);
-    allReviews.forEach(rev => console.log("CHECKING REV SPOT ID", rev.spotId))
-    console.log("CHECKING SPOT ID", Number(spotId))
-    allReviews.forEach(rev => console.log("CHECKING IF REV BELONGS HERE", rev.spotId === Number(spotId)))
-
-    console.log('ALL REVIEWS 2',reviews);
-    reviews.forEach(rev => console.log("CHECKING REV SPOT ID 2", rev.spotId))
-    console.log("CHECKING SPOT ID 2", Number(spotId))
-    reviews.forEach(rev => console.log("CHECKING IF REV BELONGS HERE 2", rev.spotId === Number(spotId)))
-
-    
 
     return (
         <>

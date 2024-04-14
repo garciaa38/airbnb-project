@@ -10,7 +10,6 @@ export default function SpotsIndex({navigate}) {
     const spots = Object.values(useSelector(state => state.spots));
     const users = useSelector(selectAllUsers);
 
-
     useEffect(() => {
         dispatch(fetchSpots())
     }, [dispatch]);
@@ -19,9 +18,11 @@ export default function SpotsIndex({navigate}) {
         <div className="spot-grid">
             {spots.map(spot => {
             return (
+                <div className="spot-tile" title={spot.name} key={spot.id}>
                 <Link to={`/spots/${spot.id}`} key={spot.id}>
-                    <SpotsIndexItem spot={spot}/>
+                    <SpotsIndexItem spot={spot} key={spot.id}/>
                 </Link>
+                </div>
                 )
             })}
         </div>

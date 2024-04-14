@@ -2,6 +2,7 @@ import { csrfFetch } from './csrf';
 
 export const LOAD_IMAGES = 'spotImages/LOAD_IMAGES'
 export const ADD_SPOT_IMAGE = 'spotImages/ADD_SPOT_IMAGES'
+export const CLEAR_SPOT_IMAGES = 'spotImages/CLEAR_SPOT_IMAGES'
 
 //ACTION CREATORS
 export const loadSpotImages = (spotImages) => ({
@@ -12,6 +13,10 @@ export const loadSpotImages = (spotImages) => ({
 export const addSpotImage = (spotImage) => ({
     type: ADD_SPOT_IMAGE,
     spotImage
+})
+
+export const clearSpotImgDetails = () => ({
+    type: CLEAR_SPOT_IMAGES
 })
 
 /** THUNK ACTION CREATORS **/
@@ -61,6 +66,10 @@ const spotImagesReducer = (state = {}, action) => {
 
         case ADD_SPOT_IMAGE: {
             return { ...state, [action.spotImage.id]: action.spotImage};
+        }
+
+        case CLEAR_SPOT_IMAGES: {
+            return {};
         }
 
         default:

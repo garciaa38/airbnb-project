@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
-import { spotDetails } from '../../store/spots';
-import { fetchSpotImages } from '../../store/spotImages';
+import { spotDetails, clearSpotDetails } from '../../store/spots';
+import { clearSpotImgDetails, fetchSpotImages } from '../../store/spotImages';
 import SpotForm from "../SpotForm";
 
 export default function UpdateSpotForm() {
@@ -14,9 +14,16 @@ export default function UpdateSpotForm() {
     useEffect(() => {
         dispatch(spotDetails(spotId))
         dispatch(fetchSpotImages(spotId))
+
+        return () => {
+            dispatch(clearSpotDetails());
+            dispatch(clearSpotImgDetails())
+        }
     }, [dispatch, spotId])
 
     if (!spot || SpotImages.length <= 0) return(<></>);
+
+    console.log("CHECKING SPOTS", spot)
 
     spot.SpotImages = SpotImages;
     

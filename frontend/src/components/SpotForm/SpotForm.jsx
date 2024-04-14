@@ -20,7 +20,6 @@ export default function SpotForm({spot, formType}) {
     const [spotImages, setSpotImages] = useState(spot?.SpotImages);
     const [errors, setErrors] = useState({});
     const dispatch = useDispatch();
-
     if (spotImages) {
         for (let i = 0; i < spotImages.length; i++) {
             spotImages[i].tempId = i;
@@ -36,8 +35,16 @@ export default function SpotForm({spot, formType}) {
         if (address === "") errorHandle.address = "Address is required"
         if (city === "") errorHandle.city = "City is required"
         if (state === "") errorHandle.state = "State is required"
-        if (latitude === "") errorHandle.latitude = "Latitude is required"
-        if (longitude === "") errorHandle.longitude = "Longitude is required"
+        if (!latitude) {
+            errorHandle.latitude = "Latitude is required"
+        } else if (latitude < -90 || latitude > 90) {
+            errorHandle.latitude = "Latitude must be within -90 and 90 degrees"
+        }
+        if (!longitude) {
+            errorHandle.longitude = "Longitude is required"
+        } else if (longitude < -180 || longitude > 180) {
+            errorHandle.longitude = "Longitude must be within -180 and 180 degrees"
+        }
         if (description.length < 30) errorHandle.description = "Description needs a minimum of 30 characters"
         if (name === "") errorHandle.name = "Name is required"
         if (price === "") errorHandle.price = "Price is required"
@@ -69,12 +76,14 @@ export default function SpotForm({spot, formType}) {
             address,
             city,
             state,
-            latitude,
-            longitude,
+            lat: latitude,
+            lng: longitude,
             description,
             name,
             price
         }
+
+        console.log("CREATING SPOT", spot)
 
 
         if (!Object.keys(errorHandle).length && formType === "Create Spot") {

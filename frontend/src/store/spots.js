@@ -4,6 +4,7 @@ export const LOAD_SPOTS = 'spots/LOAD_SPOTS'
 export const LOAD_SPOT = 'spots/LOAD_SPOT'
 export const ADD_SPOT = 'spots/ADD_SPOT'
 export const REMOVE_SPOT = 'spots/REMOVE_SPOT'
+export const CLEAR_SPOT_DETAILS = 'spots/CLEAR_SPOT_DETAILS'
 
 //ACTION CREATORS
 export const loadSpots = (spots) => ({
@@ -19,6 +20,10 @@ export const loadOneSpot = (spot) => ({
 export const removeSpot = (spotId) => ({
     type: REMOVE_SPOT,
     spotId
+})
+
+export const clearSpotDetails = () => ({
+    type: CLEAR_SPOT_DETAILS,
 })
 
 /** THUNK ACTION CREATORS **/
@@ -112,6 +117,10 @@ const spotsReducer = (state = {}, action) => {
             const newState = {...state};
             delete newState[action.spotId];
             return newState;
+        }
+
+        case CLEAR_SPOT_DETAILS: {
+            return {};
         }
 
         default:

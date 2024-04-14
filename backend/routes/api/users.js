@@ -16,7 +16,17 @@ const validateSignup = [
   check('email')
     .exists({ checkFalsy: true })
     .isEmail()
-    .withMessage('The provided email is invalid.'),
+    .withMessage('The provided email is invalid.')
+    .custom(async (value, { req }) => {
+      const email = await User.findOne({ 
+        where: {
+          email: value
+        } 
+      });
+      if (email) {
+        throw new Error('Email must be unique');
+      }
+    }),
   check('username')
     .exists({ checkFalsy: true })
     .withMessage('Username is required')

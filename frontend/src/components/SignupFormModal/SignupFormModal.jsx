@@ -17,8 +17,13 @@ function SignupFormModal({navigate}) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (password === confirmPassword) {
+    const errorHandle = {};
       setErrors({});
+
+      if (password !== confirmPassword) {
+        errorHandle.confirmPassword = "Confirm Password field must be the same as the Password field"
+      }
+
       return dispatch(
         sessionActions.signup({
           email,
@@ -33,19 +38,22 @@ function SignupFormModal({navigate}) {
       .catch(async (res) => {
         const data = await res.json();
         if (data?.errors) {
-          setErrors(data.errors);
+          for (const err in data.errors) {
+            console.log('1', err)
+            console.log('2', data.errors[err])
+            errorHandle[err] = data.errors[err]
+            console.log('3', errorHandle[err])
+          }
+          console.log('4', errorHandle)
+          setErrors(errorHandle);
+          console.log('5', errors)
         }
       })
-    }
-    return setErrors({
-      confirmPassword: "Confirm Password field must be the same as the Password field"
-    });
   };
 
   return (
     <>
       <h1>Sign Up</h1>
-      {/* {Object.values(errors).map(e => <p key={e} className="errors">{e}</p>)} */}
       <form onSubmit={handleSubmit}>
         <label>
           Email
