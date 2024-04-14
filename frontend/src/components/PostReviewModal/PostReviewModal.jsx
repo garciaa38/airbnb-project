@@ -4,7 +4,7 @@ import { useModal } from '../../context/Modal';
 import { addReview, fetchSpotReviews } from '../../store/reviews';
 import StarRatingInput from '../StarRatingInput';
 
-export default function PostReviewModal({userReview, formType, spotId, onSubmit}) {
+export default function PostReviewModal({userReview, spotId}) {
     const [review, setReview] = useState(userReview?.review);
     const [stars, setStars] = useState(userReview?.stars);
     const [errors, setErrors] = useState({});
