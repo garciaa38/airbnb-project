@@ -8,9 +8,12 @@ function Navigation({ isLoaded, navigate }) {
 
   return (
     <ul className="nav-bar">
+      <div className="nav-bar-left">
       <li className="home">
         <NavLink to="/">Home</NavLink>
       </li>
+      </div>
+      <div className="nav-bar-right">
       <li className="new-spot">
       {sessionUser && <NavLink  to="/spots/new">Create New Spot</NavLink>}
       </li>
@@ -19,6 +22,7 @@ function Navigation({ isLoaded, navigate }) {
           <ProfileButton  user={sessionUser} navigate={navigate} />
         </li>
       )}
+      </div>
     </ul>
   );
 }

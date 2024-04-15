@@ -78,6 +78,7 @@ export default function SpotDetails() {
     return (
         <>
         <div className="spot-details">
+            <div>
             <h1>{name}</h1>
             <h2>{city}, {state}, {country}</h2>
             <div className="spot-images">
@@ -110,7 +111,6 @@ export default function SpotDetails() {
                         <button onClick={() => alert("Feature coming soon!")}>Reserve</button>
                     </div>
                 </div>
-            </div>
         </div>
             <ReviewsIndex 
             reviews={reviews} 
@@ -120,6 +120,8 @@ export default function SpotDetails() {
             disableReviewButton={disableReviewButton()}
             userId={users[0]?.id}
             />
+            </div>
+            </div>
             </>
     )
 }

@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addSpot, updateSpot } from '../../store/spots';
-import { addImage } from '../../store/spotImages';
+import { addImage, fetchSpotImages } from '../../store/spotImages';
 import './SpotForm.css'
 
 export default function SpotForm({spot, formType}) {
@@ -19,12 +19,19 @@ export default function SpotForm({spot, formType}) {
     const [price, setPrice] = useState(spot?.price);
     const [spotImages, setSpotImages] = useState(spot?.SpotImages);
     const [errors, setErrors] = useState({});
+    const oldSpotImages = Object.values(useSelector(state=>state.spotImages))
     const dispatch = useDispatch();
     if (spotImages) {
         for (let i = 0; i < spotImages.length; i++) {
             spotImages[i].tempId = i;
         }
     }
+
+    useEffect(() => {
+        dispatch(fetchSpotImages(spot?.id))
+    }, [dispatch, spot?.id])
+
+    console.log("CHECKING OLD IMAGES", oldSpotImages)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -109,15 +116,18 @@ export default function SpotForm({spot, formType}) {
             const spotId = spot.id;
             await dispatch(updateSpot(spot, spotId));
 
+            console.log("CHECKING FOR UPDATED IMAGES", spotImgArr)
+            const dispatchedArr = [];
             spotImgArr.forEach(async spotImage => {
                 if (spotImage.url.length) {
                     const dispatchedImg = {
                         url: spotImage.url,
                         preview: spotImage.preview
                     }
-                    await dispatch(addImage(spotId, dispatchedImg))
+                    dispatchedArr.push(dispatchedImg)
                 }
             })
+            await dispatch(addImage(spotId, dispatchedArr))
 
             navigate(`/spots/${spotId}`)
         }

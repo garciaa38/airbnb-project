@@ -23,6 +23,7 @@ export const clearSpotImgDetails = () => ({
 
 //FETCH SPOT IMAGES
 export const fetchSpotImages = (spotId) => async dispatch => {
+    console.log("ARE WE FETCHING?")
     const res = await csrfFetch(`/api/spots/${spotId}`);
     
     if (res.ok) {
@@ -51,6 +52,18 @@ export const addImage = (spotId, spotImageArr) => async dispatch => {
             }
         }
 }
+
+//UPDATE SPOT IMAGE
+// export const updateImage = (spotId, spotImageArr) => async dispatch => {
+//     const oldSpotImages = await dispatch(fetchSpotImages(spotId))
+//     for (const spotImage of spotImageArr) {
+//         try {
+
+//         } catch {
+
+//         }
+//     } 
+// }
 
 /** REDUCER **/
 const spotImagesReducer = (state = {}, action) => {

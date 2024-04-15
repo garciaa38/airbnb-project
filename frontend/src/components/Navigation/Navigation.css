@@ -8,7 +8,8 @@
     position: fixed;
     background-color: white;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    align-items: center;
     height: 70px;
     width: 100%;
     top: 0;
@@ -17,20 +18,30 @@
     box-shadow: 0px 2px 2px;
 }
 
+.nav-bar-left {
+    width: 80%;
+}
+
+
 .home {
-    margin-right: 1200px;
     list-style-type: none;
 }
 
+.nav-bar-right {
+    display: flex;
+    margin-right: 50px;
+    justify-content: space-around;
+    width: 20%;
+}
+
 .new-spot {
-    padding-right: 50px;
     list-style-type: none;
 }
 
 .profile-button {
-    padding-left: 50px;
     list-style-type: none;
 }
+
 /* PROFILE BUTTON */
 
 .profile-dropdown {
