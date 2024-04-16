@@ -1,3 +1,89 @@
 .hidden {
     display: none
 }
+
+.review-list {
+    border-top: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    width: 1200px;
+    max-width: 1200px;
+}
+
+.review-details {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    height: auto;
+    width: 1200px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.review-details h2, h3, p {
+    margin: 10px 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    width: 100%;
+    
+}
+
+.review-details h3{
+    color: gray;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.review-details button {
+    background-color: rgb(89, 102, 223);
+    border: none;
+    cursor: pointer;
+    color: white;
+    padding: 5px;
+    transition: transform 0.1s;
+}
+
+.review-details .delete-review {
+    box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.4);
+}
+
+.review-details button:hover {
+    transform: translateY(1px);
+}
+
+.review-details button:active {
+    transform: translateY(2px); 
+    box-shadow: none;
+}
+
+.bottom-rating .spot-rating h4{
+    font-size: 30px;
+    margin: 10px 0;
+}
+
+.post-review {
+    box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.4);
+}
+
+.post-review button {
+    background-color: rgb(89, 102, 223);
+    border: none;
+    cursor: pointer;
+    color: white;
+    padding: 5px;
+    transition: transform 0.1s;
+}
+
+.post-review button:hover {
+    transform: translateY(1px);
+}
+
+.post-review button:active {
+    transform: translateY(2px); 
+    box-shadow: none;
+}

@@ -19,7 +19,7 @@ a {
 
 .spot-tile {
     display: flex;
-    border: 5px solid black;
+    /* border: 5px solid black; */
     flex-direction: column;
     flex-wrap: nowrap;
     justify-content: center;
@@ -50,15 +50,19 @@ a {
     display: flex;
     justify-content: space-between;
     margin-bottom: -30px;
-    
+    margin-top: 10px;
 }
 
 .city-and-rating h3 {
     margin-left: 10px;
+    margin-bottom: 20px;
+    width: 85%;
 }
 
 .city-and-rating h3+h3 {
-    margin-right: 10px;
+    margin-right: 9px;
+    width: 15%;
+    /* padding-left: 12rem; */
 }
 
 .spot-info h3{

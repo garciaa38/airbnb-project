@@ -27,11 +27,13 @@ export default function ReviewItem({reviewItem, userId}) {
 
 
     return (
-        <div>
+        <div className="review-details">
             <h2>{firstName}</h2>
-            <h2>{reviewDate}</h2>
-            <h2>{review}</h2>
-            {userId === reviewItem.User.id && <OpenModalMenuItem itemText="Delete" modalComponent={<DeleteReviewModal reviewId={reviewItem.id}/>}/>}
+            <h3>{reviewDate}</h3>
+            <p>{review}</p>
+            <div className="delete-review">
+                {userId === reviewItem.User.id && <OpenModalMenuItem itemText="Delete" modalComponent={<DeleteReviewModal reviewId={reviewItem.id}/>}/>}
+            </div>
         </div>
     )
 }

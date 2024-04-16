@@ -43,9 +43,9 @@
 .spot-desc-and-rating {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: start;
     width: 100%;
-
+    height: 180px;
 }
 
 .spot-host {
@@ -86,4 +86,19 @@
 .reserve button {
     width: 100%;
     height: 130%;
+    box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.4);
+    background-color: rgb(252, 98, 98);
+    color: white;
+    border: none;
+    padding: 5px;
+    transition: transform 0.1s;
+}
+
+.reserve button:hover {
+    transform: translateY(1px);
+}
+
+.reserve button:active {
+    transform: translateY(2px); 
+    box-shadow: none; 
 }
