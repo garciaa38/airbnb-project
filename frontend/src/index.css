@@ -1,12 +1,20 @@
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* SPOTS INDEX */
 .spot-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(5, 1fr);
     grid-column-gap:35px;
     grid-row-gap: 30px;
-    max-width: 1820px;
+    max-width: 1500px;
+    max-height: 2600px;
     width: 100%;
     margin: 0 auto;
+    padding-top: 80px;
 }
 
 .spot-tile {
@@ -20,6 +28,7 @@
     width: 100%;
     overflow: hidden;
     cursor: pointer;
+    
 }
 
 .preview-image {
@@ -27,15 +36,31 @@
     height: 25rem;
     object-fit: cover;
     border-radius: 20px;
+    margin-bottom: -20px;
 }
 
 .spot-info {
     display: flex;
     flex-direction: column;
     width: 100%;
+    justify-content: space-around;
 }
 
 .city-and-rating {
     display: flex;
     justify-content: space-between;
+    margin-bottom: -30px;
+    
+}
+
+.city-and-rating h3 {
+    margin-left: 10px;
+}
+
+.city-and-rating h3+h3 {
+    margin-right: 10px;
+}
+
+.spot-info h3{
+    margin-left: 10px;
 }

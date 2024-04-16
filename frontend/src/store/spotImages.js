@@ -35,22 +35,39 @@ export const fetchSpotImages = (spotId) => async dispatch => {
 export const addImage = (spotId, spotImageArr) => async dispatch => {
         for (const spotImage of spotImageArr) {
             try {
-                const res = await csrfFetch(`/api/spots/${spotId}/images`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(spotImage)
-                });
+                if (spotImage.id) {
+                    console.log("THIS IMAGE UPDATED", spotImage)
+                    const res = await csrfFetch(`/api/spot-images/${spotImage.id}`, {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(spotImage)
+                    });
+    
+                    if (res.ok) {
+                        const updatedSpotImage = await res.json();
+                        dispatch(addSpotImage(updatedSpotImage))
+                    }
+                } else {
+                    console.log("THIS IMAGE IS NEW", spotImage)
+                    const res = await csrfFetch(`/api/spots/${spotId}/images`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(spotImage)
+                    });
+                    
+                    console.log("IS EVERYTHING OK?", res)
 
-
-                if (res.ok) {
-                    const newSpotImage = await res.json();
-                    dispatch(addSpotImage(newSpotImage))
+                    if (res.ok) {
+                        const newSpotImage = await res.json();
+                        dispatch(addSpotImage(newSpotImage))
+                    }
                 }
             } catch (error) {
                 console.error("Error adding image:", error);
             }
         }
 }
+
 
 /** REDUCER **/
 const spotImagesReducer = (state = {}, action) => {

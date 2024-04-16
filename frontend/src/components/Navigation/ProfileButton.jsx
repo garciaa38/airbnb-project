@@ -6,6 +6,7 @@ import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
 import LoginFormModal from '../LoginFormModal';
 import SignupFormModal from '../SignupFormModal';
+import './Navigation.css'
 
 function ProfileButton({ user, navigate }) {
   const dispatch = useDispatch();
@@ -48,19 +49,30 @@ function ProfileButton({ user, navigate }) {
         <FaUserCircle />
       </button>
       <ul className={ulClassName} ref={ulRef}>
+        <div className="profile-items">
+          <div className="profile-select">
         {user ? (
           <>
-            <li>Hello, {user.firstName}</li>
-            <li>{user.email}</li>
-            <li>
-              <Link to="/spots/current">Manage Spots</Link>
-              </li>
-            <li>
+          <div className="profile-buttons">
+            <li className="signup-options">Hello, {user.firstName}</li>
+          </div>
+          <div className="profile-buttons">
+            <li className="signup-options">{user.email}</li>
+          </div>
+          <div className="profile-buttons">
+            <li className="manage-spots">
+              <Link to="/spots/current" onClick={closeMenu}>Manage Spots</Link>
+            </li>
+          </div>
+          <div className="profile-buttons">
+            <li className="logout-button">
               <button onClick={logout}>Log Out</button>
             </li>
+          </div>
           </>
         ) : (
           <>
+          {/* <div className="profile-select"> */}
             <OpenModalMenuItem
               itemText="Log In"
               onItemClick={closeMenu}
@@ -70,9 +82,11 @@ function ProfileButton({ user, navigate }) {
               itemText="Sign Up"
               onItemClick={closeMenu}
               modalComponent={<SignupFormModal navigate={navigate} />}
-            />
+              />
           </>
         )}
+        </div>
+        </div>
       </ul>
     </>
   );

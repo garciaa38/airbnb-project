@@ -23,7 +23,6 @@ export default function UpdateSpotForm() {
 
     if (!spot || SpotImages.length <= 0) return(<></>);
 
-    console.log("CHECKING SPOTS", spot)
 
     spot.SpotImages = SpotImages;
     

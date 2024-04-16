@@ -1,6 +1,7 @@
 import { spotDetails, clearSpotDetails } from "../../store/spots";
+import { fetchSpotImages, clearSpotImgDetails } from "../../store/spotImages";
 import { fetchSpotReviews } from "../../store/reviews";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";
 import ReviewsIndex from '../ReviewsIndex/index';
@@ -17,6 +18,9 @@ export default function SpotDetails() {
     let reviews = Object.values(useSelector(state => state.reviews))
     let allReviews = useSelector(selectAllReviews);
     const users = useSelector(selectAllUsers);
+    const spotImages = Object.values(useSelector(state=>state.spotImages));
+
+    const [isLoading, setIsLoading] = useState(true);
     
     
     if (reviews[0]?.spotId !== Number(spotId)) {
@@ -33,18 +37,29 @@ export default function SpotDetails() {
     useEffect(() => {
         dispatch(spotDetails(spotId))
         dispatch(fetchSpotReviews(spotId))
+        dispatch(fetchSpotImages(spotId))
 
         return () => {
             dispatch(clearSpotDetails());
+            dispatch(clearSpotImgDetails())
         }
-    }, [dispatch, spotId])
+    }, [dispatch, spotId]);
+
+    useEffect(() => {
+        if (spot &&
+            spotImages.length === spot.SpotImages?.length &&
+            spotImages.every((image, index) => image.url === spot.SpotImages[index].url)) {
+                setIsLoading(false)
+            }
+    }, [spot, spotImages])
     
     
     if (!spot) {
         return (
             <h2>Loading...</h2>
         )
-    }
+    }  
+    
     
     const {
         SpotImages,
@@ -56,12 +71,22 @@ export default function SpotDetails() {
         description,
         price
     } = spot;
+
+    console.log("CHECKING SPOT IMAGES FROM SPOT", SpotImages)
+    console.log("CHECKING SPOT IMAGES FROM STORE", spotImages)
     
     if (!Owner || !SpotImages) {
         return (
             <h2>Loading...</h2>
         )
     }
+
+    if (isLoading) {
+        return (
+            <h2>Loading...</h2>
+        )
+    }
+
     
     const disableReviewButton = () => {
         const userReviewedSpot = allReviews.find(rev => rev.userId === users[0]?.id);
@@ -78,10 +103,11 @@ export default function SpotDetails() {
     return (
         <>
         <div className="spot-details">
+            <div>
             <h1>{name}</h1>
             <h2>{city}, {state}, {country}</h2>
             <div className="spot-images">
-            {SpotImages?.map(image => {
+            {spotImages?.map(image => {
                 counter++;
                 return (
                     <img
@@ -110,7 +136,6 @@ export default function SpotDetails() {
                         <button onClick={() => alert("Feature coming soon!")}>Reserve</button>
                     </div>
                 </div>
-            </div>
         </div>
             <ReviewsIndex 
             reviews={reviews} 
@@ -120,6 +145,8 @@ export default function SpotDetails() {
             disableReviewButton={disableReviewButton()}
             userId={users[0]?.id}
             />
+            </div>
+            </div>
             </>
     )
 }

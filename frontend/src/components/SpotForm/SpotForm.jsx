@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addSpot, updateSpot } from '../../store/spots';
-import { addImage } from '../../store/spotImages';
+import { addImage, fetchSpotImages } from '../../store/spotImages';
 import './SpotForm.css'
 
 export default function SpotForm({spot, formType}) {
@@ -19,12 +19,17 @@ export default function SpotForm({spot, formType}) {
     const [price, setPrice] = useState(spot?.price);
     const [spotImages, setSpotImages] = useState(spot?.SpotImages);
     const [errors, setErrors] = useState({});
+    const oldSpotImages = Object.values(useSelector(state=>state.spotImages)).sort((a,b) => a.id - b.id)
     const dispatch = useDispatch();
     if (spotImages) {
         for (let i = 0; i < spotImages.length; i++) {
             spotImages[i].tempId = i;
         }
     }
+
+    useEffect(() => {
+        dispatch(fetchSpotImages(spot?.id))
+    }, [dispatch, spot?.id])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -83,8 +88,6 @@ export default function SpotForm({spot, formType}) {
             price
         }
 
-        console.log("CREATING SPOT", spot)
-
 
         if (!Object.keys(errorHandle).length && formType === "Create Spot") {
             setErrors({});
@@ -109,15 +112,39 @@ export default function SpotForm({spot, formType}) {
             const spotId = spot.id;
             await dispatch(updateSpot(spot, spotId));
 
-            spotImgArr.forEach(async spotImage => {
-                if (spotImage.url.length) {
-                    const dispatchedImg = {
-                        url: spotImage.url,
-                        preview: spotImage.preview
+            const dispatchedArr = [];
+
+            for (let i = 0; i < spotImgArr.length; i++) {
+                if (oldSpotImages[i]) {
+                    console.log("CHECKING OLD VS NEW", oldSpotImages[i], spotImgArr[i])
+                    if (oldSpotImages[i].url !== spotImgArr[i].url) {
+                        oldSpotImages[i].url = spotImgArr[i].url
                     }
-                    await dispatch(addImage(spotId, dispatchedImg))
+
+                    if (oldSpotImages[i].preview !== spotImgArr[i].preview) {
+                        oldSpotImages[i].preview = spotImgArr[i].preview
+                    }
+
+                    const dispatchedImg = {
+                        id: oldSpotImages[i].id,
+                        url: oldSpotImages[i].url,
+                        preview: oldSpotImages[i].preview
+                    }
+                    dispatchedArr.push(dispatchedImg)
+                } else {
+                    if (spotImgArr[i].url.length) {
+                        console.log("CHECKING JUST NEW", spotImgArr[i])
+
+                        const dispatchedImg = {
+                            url: spotImgArr[i].url,
+                            preview: spotImgArr[i].preview
+                        }
+                        dispatchedArr.push(dispatchedImg)
+                    }
                 }
-            })
+            }
+            console.log("DISPATCHED ARRAY", dispatchedArr)
+            await dispatch(addImage(spotId, dispatchedArr))
 
             navigate(`/spots/${spotId}`)
         }
