@@ -1,4 +1,5 @@
 import { spotDetails, clearSpotDetails } from "../../store/spots";
+import { fetchSpotImages, clearSpotImgDetails } from "../../store/spotImages";
 import { fetchSpotReviews } from "../../store/reviews";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from 'react-redux';
@@ -17,6 +18,7 @@ export default function SpotDetails() {
     let reviews = Object.values(useSelector(state => state.reviews))
     let allReviews = useSelector(selectAllReviews);
     const users = useSelector(selectAllUsers);
+    const spotImages = Object.values(useSelector(state=>state.spotImages));
     
     
     if (reviews[0]?.spotId !== Number(spotId)) {
@@ -33,9 +35,11 @@ export default function SpotDetails() {
     useEffect(() => {
         dispatch(spotDetails(spotId))
         dispatch(fetchSpotReviews(spotId))
+        dispatch(fetchSpotImages(spotId))
 
         return () => {
             dispatch(clearSpotDetails());
+            dispatch(clearSpotImgDetails())
         }
     }, [dispatch, spotId])
     
@@ -44,7 +48,8 @@ export default function SpotDetails() {
         return (
             <h2>Loading...</h2>
         )
-    }
+    }  
+    
     
     const {
         SpotImages,
@@ -56,12 +61,30 @@ export default function SpotDetails() {
         description,
         price
     } = spot;
+
+    console.log("CHECKING SPOT IMAGES FROM SPOT", SpotImages)
+    console.log("CHECKING SPOT IMAGES FROM STORE", spotImages)
+
+    if (SpotImages?.length !== spotImages.length) {
+        return (
+            <h2>Loading...</h2>
+        )
+    } else if (SpotImages.length === spotImages.length) {
+        for (let i = 0; i < spot.SpotImages.length; i++) {
+            if (SpotImages[i].url !== spotImages[i].url) {
+                return (
+                    <h2>Loading...</h2>
+                )
+            }
+        }
+    }
     
     if (!Owner || !SpotImages) {
         return (
             <h2>Loading...</h2>
         )
     }
+
     
     const disableReviewButton = () => {
         const userReviewedSpot = allReviews.find(rev => rev.userId === users[0]?.id);
@@ -82,7 +105,7 @@ export default function SpotDetails() {
             <h1>{name}</h1>
             <h2>{city}, {state}, {country}</h2>
             <div className="spot-images">
-            {SpotImages?.map(image => {
+            {spotImages?.map(image => {
                 counter++;
                 return (
                     <img

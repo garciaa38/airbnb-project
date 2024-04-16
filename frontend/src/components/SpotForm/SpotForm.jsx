@@ -31,8 +31,6 @@ export default function SpotForm({spot, formType}) {
         dispatch(fetchSpotImages(spot?.id))
     }, [dispatch, spot?.id])
 
-    console.log("CHECKING OLD IMAGES", oldSpotImages)
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -90,8 +88,6 @@ export default function SpotForm({spot, formType}) {
             price
         }
 
-        console.log("CREATING SPOT", spot)
-
 
         if (!Object.keys(errorHandle).length && formType === "Create Spot") {
             setErrors({});
@@ -116,7 +112,6 @@ export default function SpotForm({spot, formType}) {
             const spotId = spot.id;
             await dispatch(updateSpot(spot, spotId));
 
-            console.log("CHECKING FOR UPDATED IMAGES", spotImgArr)
             const dispatchedArr = [];
 
             for (let i = 0; i < spotImgArr.length; i++) {

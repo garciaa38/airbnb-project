@@ -23,7 +23,6 @@ export const clearSpotImgDetails = () => ({
 
 //FETCH SPOT IMAGES
 export const fetchSpotImages = (spotId) => async dispatch => {
-    console.log("ARE WE FETCHING?")
     const res = await csrfFetch(`/api/spots/${spotId}`);
     
     if (res.ok) {
