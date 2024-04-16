@@ -1,7 +1,7 @@
 import { spotDetails, clearSpotDetails } from "../../store/spots";
 import { fetchSpotImages, clearSpotImgDetails } from "../../store/spotImages";
 import { fetchSpotReviews } from "../../store/reviews";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from "react-router-dom";
 import ReviewsIndex from '../ReviewsIndex/index';
@@ -19,6 +19,8 @@ export default function SpotDetails() {
     let allReviews = useSelector(selectAllReviews);
     const users = useSelector(selectAllUsers);
     const spotImages = Object.values(useSelector(state=>state.spotImages));
+
+    const [isLoading, setIsLoading] = useState(true);
     
     
     if (reviews[0]?.spotId !== Number(spotId)) {
@@ -41,7 +43,15 @@ export default function SpotDetails() {
             dispatch(clearSpotDetails());
             dispatch(clearSpotImgDetails())
         }
-    }, [dispatch, spotId])
+    }, [dispatch, spotId]);
+
+    useEffect(() => {
+        if (spot &&
+            spotImages.length === spot.SpotImages?.length &&
+            spotImages.every((image, index) => image.url === spot.SpotImages[index].url)) {
+                setIsLoading(false)
+            }
+    }, [spot, spotImages])
     
     
     if (!spot) {
@@ -64,22 +74,14 @@ export default function SpotDetails() {
 
     console.log("CHECKING SPOT IMAGES FROM SPOT", SpotImages)
     console.log("CHECKING SPOT IMAGES FROM STORE", spotImages)
-
-    if (SpotImages?.length !== spotImages.length) {
+    
+    if (!Owner || !SpotImages) {
         return (
             <h2>Loading...</h2>
         )
-    } else if (SpotImages.length === spotImages.length) {
-        for (let i = 0; i < spot.SpotImages.length; i++) {
-            if (SpotImages[i].url !== spotImages[i].url) {
-                return (
-                    <h2>Loading...</h2>
-                )
-            }
-        }
     }
-    
-    if (!Owner || !SpotImages) {
+
+    if (isLoading) {
         return (
             <h2>Loading...</h2>
         )
