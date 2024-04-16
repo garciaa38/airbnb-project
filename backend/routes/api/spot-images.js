@@ -10,6 +10,52 @@ const { handleValidationErrors } = require('../../utils/validation');
 
 const router = express.Router();
 
+//UPDATE A SPOT IMAGE
+router.put(
+    '/:imageId',
+    requireAuth,
+    async (req, res) => {
+        const {imageId} = req.params;
+        const {url, preview} = req.body;
+        const errors = {};
+
+        const updateImage = await SpotImage.findByPk(imageId);
+
+        if (!updateImage) {
+            return res.status(404).send({
+                "message": "Spot Image couldn't be found"
+            })
+        } else {
+            await updateImage.update({
+                url,
+                preview
+            })
+            .catch((error) => {
+                for (let i = 0; i < error.errors.length; i++) {
+                    let key = error.errors[i].path
+                    errors[`${key}`] = error.errors[i].message
+                }
+            });
+
+            if (Object.keys(errors).length > 0) {
+                const errorMsg = {
+                    message: "Bad Request",
+                    errors: errors
+                }
+
+                return res.status(400).json(errorMsg);
+            } else {
+                const result = {
+                    id: updateImage.id,
+                    url: updateImage.url,
+                    preview: updateImage.preview
+                }
+
+                return res.json(result);
+            }
+        }
+    }
+)
 
 //DELETE A SPOT IMAGE --- COMPLETE
 router.delete(

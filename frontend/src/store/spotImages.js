@@ -36,16 +36,28 @@ export const fetchSpotImages = (spotId) => async dispatch => {
 export const addImage = (spotId, spotImageArr) => async dispatch => {
         for (const spotImage of spotImageArr) {
             try {
-                const res = await csrfFetch(`/api/spots/${spotId}/images`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(spotImage)
-                });
-
-
-                if (res.ok) {
-                    const newSpotImage = await res.json();
-                    dispatch(addSpotImage(newSpotImage))
+                if (spotImage.id) {
+                    const res = await csrfFetch(`/api/spot-images/${spotImage.id}`, {
+                        method: 'PUT',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(spotImage)
+                    });
+    
+                    if (res.ok) {
+                        const updatedSpotImage = await res.json();
+                        dispatch(addSpotImage(updatedSpotImage))
+                    }
+                } else {
+                    const res = await csrfFetch(`/api/spots/${spotId}/images`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify(spotImage)
+                    });
+    
+                    if (res.ok) {
+                        const newSpotImage = await res.json();
+                        dispatch(addSpotImage(newSpotImage))
+                    }
                 }
             } catch (error) {
                 console.error("Error adding image:", error);
@@ -53,17 +65,6 @@ export const addImage = (spotId, spotImageArr) => async dispatch => {
         }
 }
 
-//UPDATE SPOT IMAGE
-// export const updateImage = (spotId, spotImageArr) => async dispatch => {
-//     const oldSpotImages = await dispatch(fetchSpotImages(spotId))
-//     for (const spotImage of spotImageArr) {
-//         try {
-
-//         } catch {
-
-//         }
-//     } 
-// }
 
 /** REDUCER **/
 const spotImagesReducer = (state = {}, action) => {

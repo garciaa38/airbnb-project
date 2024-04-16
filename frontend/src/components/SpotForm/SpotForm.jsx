@@ -19,7 +19,7 @@ export default function SpotForm({spot, formType}) {
     const [price, setPrice] = useState(spot?.price);
     const [spotImages, setSpotImages] = useState(spot?.SpotImages);
     const [errors, setErrors] = useState({});
-    const oldSpotImages = Object.values(useSelector(state=>state.spotImages))
+    const oldSpotImages = Object.values(useSelector(state=>state.spotImages)).sort((a,b) => a.id - b.id)
     const dispatch = useDispatch();
     if (spotImages) {
         for (let i = 0; i < spotImages.length; i++) {
@@ -118,18 +118,37 @@ export default function SpotForm({spot, formType}) {
 
             console.log("CHECKING FOR UPDATED IMAGES", spotImgArr)
             const dispatchedArr = [];
-            spotImgArr.forEach(async spotImage => {
-                if (spotImage.url.length) {
+
+            for (let i = 0; i < spotImgArr.length; i++) {
+                if (oldSpotImages[i]) {
+                    if (oldSpotImages[i].url !== spotImgArr[i].url) {
+                        oldSpotImages[i].url = spotImgArr[i].url
+                    }
+
+                    if (oldSpotImages[i].preview !== spotImgArr[i].preview) {
+                        oldSpotImages[i].preview = spotImgArr[i].preview
+                    }
+
                     const dispatchedImg = {
-                        url: spotImage.url,
-                        preview: spotImage.preview
+                        id: oldSpotImages[i].id,
+                        url: oldSpotImages[i].url,
+                        preview: oldSpotImages[i].preview
                     }
                     dispatchedArr.push(dispatchedImg)
+                } else {
+                    if (spotImgArr[i].url.length) {
+                        const dispatchedImg = {
+                            url: spotImgArr[i].url,
+                            preview: spotImgArr[i].preview
+                        }
+                        dispatchedArr.push(dispatchedImg)
+                    }
                 }
-            })
+
             await dispatch(addImage(spotId, dispatchedArr))
 
             navigate(`/spots/${spotId}`)
+            }
         }
 
 
