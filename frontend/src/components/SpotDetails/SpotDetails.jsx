@@ -103,7 +103,7 @@ export default function SpotDetails() {
     return (
         <>
         <div className="spot-details">
-            <div>
+            <div className="details-container">
             <h1>{name}</h1>
             <h2>{city}, {state}, {country}</h2>
             <div className="spot-images">
