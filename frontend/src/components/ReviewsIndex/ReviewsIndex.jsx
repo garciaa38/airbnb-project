@@ -16,8 +16,12 @@ export default function ReviewsIndex({
 }) {
   const reversedReviews = [...reviews].reverse();
 
-  return (
-    <div className="review-list">
+  console.log("CHECK review list", reversedReviews)
+  console.log("CHECK DISABLE REVIEW BUTTON", disableReviewButton)
+
+  if (!disableReviewButton && reversedReviews.length <= 0) {
+    return (
+      <div className="review-list">
       <div className="bottom-rating">
         <SpotRating numReviews={numReviews} avgStarRating={avgStarRating} />
       </div>
@@ -28,11 +32,29 @@ export default function ReviewsIndex({
           modalComponent={<CreateReviewForm spotId={spotId} />}
         />
       </div>
-      {reversedReviews.map((review) => {
-        return (
-          <ReviewItem key={review.id} reviewItem={review} userId={userId} />
-        );
-      })}
+      <p>Be the first to post a review!</p>
     </div>
-  );
+    )
+  } else {
+    return (
+      <div className="review-list">
+        <div className="bottom-rating">
+          <SpotRating numReviews={numReviews} avgStarRating={avgStarRating} />
+        </div>
+        <div className="post-review">
+          <OpenModalMenuItem
+            itemText="Post Your Review"
+            disabled={disableReviewButton}
+            modalComponent={<CreateReviewForm spotId={spotId} />}
+          />
+        </div>
+        {reversedReviews.map((review) => {
+          return (
+            <ReviewItem key={review.id} reviewItem={review} userId={userId} />
+          );
+        })}
+      </div>
+    );
+  }
+
 }

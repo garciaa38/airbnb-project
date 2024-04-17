@@ -72,7 +72,6 @@ function ProfileButton({ user, navigate }) {
           </>
         ) : (
           <>
-          {/* <div className="profile-select"> */}
             <OpenModalMenuItem
               itemText="Log In"
               onItemClick={closeMenu}

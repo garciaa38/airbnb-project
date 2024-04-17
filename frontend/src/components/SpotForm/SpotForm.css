@@ -1,3 +1,165 @@
-.errors {
-    color: red
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px;
+    justify-content: center;
+    align-items: center;
 }
+
+.form-container form {
+    max-width: 500px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.errors {
+    color: red;
+    height: 20px;
+}
+
+.location-form {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid black;
+    padding-bottom: 10px;
+}
+
+.country {
+    display: flex;
+    flex-direction: column;
+}
+
+.address {
+    display: flex;
+    flex-direction: column;
+}
+
+.city-state {
+    display: flex;
+    align-items: end;
+}
+
+.city {
+    display: flex;
+    flex-direction: column;
+    width: 55%;
+}
+
+.city-comma {
+    padding-right: 5px;
+    margin-right: 4%;
+    padding-bottom: 5px;
+    
+} 
+
+.state {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+}
+
+.lat-and-long {
+    display: flex;
+}
+
+.latitude {
+    display: flex;
+    flex-direction: column;
+    width: 47.5%;
+}
+
+.lat-lng-comma {
+    padding-right: 5px;
+    margin-right: 4%;
+    padding-top: 17px;
+}
+
+.longitude {
+    display: flex;
+    flex-direction: column;
+    width: 46%;
+}
+
+.description-form {
+    padding-top: 10px;
+    border-bottom: 1px solid black;
+    padding-bottom: 10px;
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+}
+
+.name-form {
+    padding-top: 10px;
+    border-bottom: 1px solid black;
+    padding-bottom: 10px;
+}
+
+.name {
+    display: flex;
+    flex-direction: column;
+}
+
+.price-form {
+    padding-top: 10px;
+    border-bottom: 1px solid black;
+    padding-bottom: 10px;
+}
+
+.price {
+    display: flex;
+    flex-direction: column;
+}
+
+.price input::-webkit-inner-spin-button,
+.price input::-webkit-out-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.price input {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+.photo-form {
+    padding-top: 10px;
+    border-bottom: 1px solid black;
+    padding-bottom: 10px;
+}
+
+.photos {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-submit {
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+}
+
+.form-submit button {
+    width: 40%;
+    box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.4);
+    background-color: rgb(252, 98, 98);
+    color: white;
+    border: none;
+    padding: 5px;
+    transition: transform 0.1s;
+}
+
+.form-submit button:hover {
+    transform: translateY(1px);
+}
+
+.form-submit button:active {
+    transform: translateY(2px); 
+    box-shadow: none; 
+}
+
+
