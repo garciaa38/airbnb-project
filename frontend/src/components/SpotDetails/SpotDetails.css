@@ -45,7 +45,8 @@
     justify-content: space-between;
     align-items: start;
     width: 100%;
-    height: 180px;
+    height: auto;
+    padding-bottom: 15px;
 }
 
 .spot-host {

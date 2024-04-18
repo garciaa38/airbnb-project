@@ -120,7 +120,7 @@ export default function SpotDetails() {
             </div>
             <div className="spot-reserve">
               <div className="spot-reserve-top">
-                <h4>${price} night</h4>
+                <h4>${parseFloat(Number(price)).toFixed(2)}/night</h4>
                 <SpotRating avgStarRating={avgRating} numReviews={numReviews} />
               </div>
               <div className="reserve">

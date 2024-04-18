@@ -16,6 +16,7 @@
     left: 0;
     margin-top: 0;
     box-shadow: 0px 2px 2px;
+    z-index: 1;
 }
 
 .nav-bar-left {
@@ -25,6 +26,11 @@
 
 .home {
     list-style-type: none;
+}
+
+.home img {
+    width: 15%;
+    height: 60px;
 }
 
 .nav-bar-right {

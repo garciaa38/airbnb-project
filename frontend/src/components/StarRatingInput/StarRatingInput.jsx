@@ -1,4 +1,4 @@
-import { FaRegStar } from 'react-icons/fa';
+import { FaStar } from 'react-icons/fa';
 import { useState } from 'react';
 import './StarRatingInput.css'
 
@@ -9,7 +9,7 @@ export default function StarRatingInput({rating, disabled, onChange}) {
         <>
           <div className="rating-input">
             {[1,2,3,4,5].map(rate => {
-                return <FaRegStar 
+                return <FaStar 
                 key={rate}
                 className={activeRating >= rate ? "filled" : "empty"}
                 onMouseEnter={() => {if (!disabled) setActiveRating(rate)}}
