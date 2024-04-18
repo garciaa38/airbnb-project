@@ -19,6 +19,7 @@
     align-items: start;
     align-content: normal;
     width: 100%;
+    max-width: 349px;
     overflow: hidden;
     cursor: pointer;
     border: 1px solid black;

@@ -4,8 +4,8 @@ import "./SpotsIndexItem.css";
 export default function SpotsIndexItem({ spot }) {
   const { previewImage, name, city, state, avgRating, price } = spot;
   return (
-    <div>
-      <div>
+    <div className="tile">
+      <div className="aspect-ratio-box">
         <img
           className="preview-image"
           src={previewImage}

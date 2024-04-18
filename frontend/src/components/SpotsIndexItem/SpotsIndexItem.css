@@ -1,5 +1,14 @@
-.preview-image {
+.tile {
+    max-width: 349px;
     width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.preview-image {
+    width: 200%;
+    height: auto;
+    max-width: 349px;
     height: 25rem;
     object-fit: cover;
     border-radius: 20px 20px 0 0;
@@ -9,7 +18,9 @@
 .spot-info {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    max-width: 349px;
+    width: 200%;
+    height: auto;
     justify-content: space-around;
     background-color: rgb(237, 240, 243);
 }
@@ -19,6 +30,8 @@
     justify-content: space-between;
     margin-bottom: -30px;
     margin-top: 10px;
+    max-width: 349px;
+    width: 100%;
 }
 
 .city-and-rating h3 {
