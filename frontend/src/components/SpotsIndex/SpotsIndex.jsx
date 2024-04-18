@@ -3,6 +3,7 @@ import { fetchSpots } from '../../store/spots';
 import { useEffect } from 'react';
 import SpotsIndexItem from '../SpotsIndexItem/SpotsIndexItem';
 import { Link } from 'react-router-dom'
+import './SpotsIndex.css'
 
 export default function SpotsIndex() {
     const dispatch = useDispatch();

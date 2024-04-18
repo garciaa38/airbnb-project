@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useModal } from '../../context/Modal';
-import * as sessionActions from '../../store/session';
-import './SignupForm.css';
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useModal } from "../../context/Modal";
+import * as sessionActions from "../../store/session";
+import "./SignupForm.css";
 
-function SignupFormModal({navigate}) {
+function SignupFormModal({ navigate }) {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -18,118 +18,125 @@ function SignupFormModal({navigate}) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const errorHandle = {};
-      setErrors({});
+    setErrors({});
 
-      if (password !== confirmPassword) {
-        errorHandle.confirmPassword = "Confirm Password field must be the same as the Password field"
-      }
+    if (password !== confirmPassword) {
+      errorHandle.confirmPassword =
+        "Confirm Password field must be the same as the Password field";
+    }
 
-      return dispatch(
-        sessionActions.signup({
-          email,
-          username,
-          firstName,
-          lastName,
-          password
-        })
-      )
+    return dispatch(
+      sessionActions.signup({
+        email,
+        username,
+        firstName,
+        lastName,
+        password,
+      })
+    )
       .then(navigate("/"))
       .then(closeModal)
       .catch(async (res) => {
         const data = await res.json();
         if (data?.errors) {
           for (const err in data.errors) {
-            console.log('1', err)
-            console.log('2', data.errors[err])
-            errorHandle[err] = data.errors[err]
-            console.log('3', errorHandle[err])
+            console.log("1", err);
+            console.log("2", data.errors[err]);
+            errorHandle[err] = data.errors[err];
+            console.log("3", errorHandle[err]);
           }
-          console.log('4', errorHandle)
+          console.log("4", errorHandle);
           setErrors(errorHandle);
-          console.log('5', errors)
+          console.log("5", errors);
         }
-      })
+      });
   };
 
   return (
-    <>
+    <div className="sign-up-form">
       <h1>Sign Up</h1>
+      <div className="error-list">
+        {errors.email && <p className="errors">{errors.email}</p>}
+        {errors.username && <p className="errors">{errors.username}</p>}
+        {errors.firstName && <p className="errors">{errors.firstName}</p>}
+        {errors.lastName && <p className="errors">{errors.lastName}</p>}
+        {errors.password && <p className="errors">{errors.password}</p>}
+        {errors.confirmPassword && (
+          <p className="errors">{errors.confirmPassword}</p>
+        )}
+      </div>
       <form onSubmit={handleSubmit}>
-        <label>
-          Email
+        <div className="sign-up-email">
           <input
             type="text"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-        </label>
-        {errors.email && <p className='errors'>{errors.email}</p>}
-        <label>
-          Username
+        </div>
+        <div className="sign-up-username">
           <input
             type="text"
+            placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
-        </label>
-        {errors.username && <p className='errors'>{errors.username}</p>}
-        <label>
-          First Name
+        </div>
+        <div className="sign-up-firstName">
           <input
+            placeholder="First Name"
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             required
           />
-        </label>
-        {errors.firstName && <p className='errors'>{errors.firstName}</p>}
-        <label>
-          Last Name
+        </div>
+        <div className="sign-up-lastName">
           <input
             type="text"
+            placeholder="Last Name"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             required
           />
-        </label>
-        {errors.lastName && <p className='errors'>{errors.lastName}</p>}
-        <label>
-          Password
+        </div>
+        <div className="sign-up-password">
           <input
+            placeholder="Password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </label>
-        {errors.password && <p className='errors'>{errors.password}</p>}
-        <label>
-          Confirm Password
+        </div>
+        <div className="sign-up-confirm">
           <input
             type="password"
+            placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-        </label>
-        {errors.confirmPassword && (
-          <p className='errors'>{errors.confirmPassword}</p>
-        )}
-        <button 
-        type="submit"
-        disabled={email.length <= 0 ||
-                  username.length <= 3 ||
-                  firstName.length <= 0 ||
-                  lastName.length <= 0 ||
-                  password.length <= 5 ||
-                  confirmPassword <= 5
-                }
-        >Sign Up
-        </button>
+        </div>
+        <div className="sign-up-submit">
+          <button
+            type="submit"
+            disabled={
+              email.length <= 0 ||
+              username.length <= 3 ||
+              firstName.length <= 0 ||
+              lastName.length <= 0 ||
+              password.length <= 5 ||
+              confirmPassword <= 5
+            }
+          >
+            Sign Up
+          </button>
+        </div>
       </form>
-    </>
+    </div>
   );
 }
 
