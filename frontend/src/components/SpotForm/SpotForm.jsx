@@ -67,6 +67,8 @@ export default function SpotForm({ spot, formType }) {
       errorHandle.price = "Price is required";
     } else if (isNaN(Number(price))) {
       errorHandle.price = "Please include a valid price"
+    } else if (Number(price) <= 0) {
+      errorHandle.price = "Price is required"
     } else if (price.toString().split(".")[1]?.length > 2) {
       const fixedPrice = parseFloat(Number(price)).toFixed(2);
       setPrice(fixedPrice);
@@ -221,7 +223,7 @@ export default function SpotForm({ spot, formType }) {
             <div className="latitude">
               <label>Latitude</label>
               <input
-                type="text"
+                type="number"
                 placeholder="Latitude"
                 value={latitude}
                 onChange={(e) => setLatitude(e.target.value)}
@@ -234,7 +236,7 @@ export default function SpotForm({ spot, formType }) {
             <div className="longitude">
               <label>Longitude</label>
               <input
-                type="text"
+                type="number"
                 placeholder="Longitude"
                 value={longitude}
                 onChange={(e) => setLongitude(e.target.value)}

@@ -19,8 +19,11 @@ export default function PostReviewModal({ userReview, spotId }) {
 
     const errorHandle = {};
 
-    if (review.length <= 9)
+    if (review.length <= 9) {
       errorHandle.review = "Review needs at least 10 characters";
+    } else if (review.length > 500) {
+      errorHandle.review = "Please limit your review to 500 characters"
+    }
     if (stars <= 0) errorHandle.stars = "Please enter a rating of 1 - 5";
 
     setErrors(errorHandle);
