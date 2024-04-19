@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchSpots } from '../../store/spots';
+import { fetchSpots, clearSpotDetails } from '../../store/spots';
 import { useEffect } from 'react';
 import SpotsIndexItem from '../SpotsIndexItem/SpotsIndexItem';
 import { Link } from 'react-router-dom'
@@ -10,7 +10,11 @@ export default function SpotsIndex() {
     const spots = Object.values(useSelector(state => state.spots));
 
     useEffect(() => {
-        dispatch(fetchSpots())
+        dispatch(fetchSpots());
+
+        return () => {
+            dispatch(clearSpotDetails());
+        }
     }, [dispatch]);
 
     return (

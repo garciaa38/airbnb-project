@@ -134,7 +134,6 @@ export default function SpotForm({ spot, formType }) {
 
       for (let i = 0; i < spotImgArr.length; i++) {
         if (oldSpotImages[i]) {
-          console.log("CHECKING OLD VS NEW", oldSpotImages[i], spotImgArr[i]);
           if (oldSpotImages[i].url !== spotImgArr[i].url) {
             oldSpotImages[i].url = spotImgArr[i].url;
           }
@@ -151,7 +150,6 @@ export default function SpotForm({ spot, formType }) {
           dispatchedArr.push(dispatchedImg);
         } else {
           if (spotImgArr[i].url.length) {
-            console.log("CHECKING JUST NEW", spotImgArr[i]);
 
             const dispatchedImg = {
               url: spotImgArr[i].url,
@@ -161,7 +159,6 @@ export default function SpotForm({ spot, formType }) {
           }
         }
       }
-      console.log("DISPATCHED ARRAY", dispatchedArr);
       await dispatch(addImage(spotId, dispatchedArr));
 
       navigate(`/spots/${spotId}`);

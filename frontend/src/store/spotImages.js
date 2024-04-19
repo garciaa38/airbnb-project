@@ -1,4 +1,5 @@
 import { csrfFetch } from './csrf';
+import { createSelector } from 'reselect';
 
 export const LOAD_IMAGES = 'spotImages/LOAD_IMAGES'
 export const ADD_SPOT_IMAGE = 'spotImages/ADD_SPOT_IMAGES'
@@ -19,6 +20,14 @@ export const clearSpotImgDetails = () => ({
     type: CLEAR_SPOT_IMAGES
 })
 
+const selectSpotImages = state => state.spotImages;
+
+export const grabSpotImages = createSelector(selectSpotImages, spotImages => {
+    return spotImages ? Object.values(spotImages) : [];
+}
+
+)
+
 /** THUNK ACTION CREATORS **/
 
 //FETCH SPOT IMAGES
@@ -36,7 +45,6 @@ export const addImage = (spotId, spotImageArr) => async dispatch => {
         for (const spotImage of spotImageArr) {
             try {
                 if (spotImage.id) {
-                    console.log("THIS IMAGE UPDATED", spotImage)
                     const res = await csrfFetch(`/api/spot-images/${spotImage.id}`, {
                         method: 'PUT',
                         headers: {'Content-Type': 'application/json'},
@@ -48,14 +56,12 @@ export const addImage = (spotId, spotImageArr) => async dispatch => {
                         dispatch(addSpotImage(updatedSpotImage))
                     }
                 } else {
-                    console.log("THIS IMAGE IS NEW", spotImage)
                     const res = await csrfFetch(`/api/spots/${spotId}/images`, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify(spotImage)
                     });
                     
-                    console.log("IS EVERYTHING OK?", res)
 
                     if (res.ok) {
                         const newSpotImage = await res.json();

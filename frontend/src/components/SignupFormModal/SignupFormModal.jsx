@@ -40,14 +40,10 @@ function SignupFormModal({ navigate }) {
         const data = await res.json();
         if (data?.errors) {
           for (const err in data.errors) {
-            console.log("1", err);
-            console.log("2", data.errors[err]);
+           
             errorHandle[err] = data.errors[err];
-            console.log("3", errorHandle[err]);
           }
-          console.log("4", errorHandle);
           setErrors(errorHandle);
-          console.log("5", errors);
         }
       });
   };

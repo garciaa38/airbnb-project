@@ -1,5 +1,5 @@
 import { spotDetails, clearSpotDetails } from "../../store/spots";
-import { fetchSpotImages, clearSpotImgDetails } from "../../store/spotImages";
+import { fetchSpotImages, clearSpotImgDetails, grabSpotImages } from "../../store/spotImages";
 import { fetchSpotReviews } from "../../store/reviews";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,6 +10,7 @@ import { selectAllReviews } from "../../store/reviews";
 import { selectAllUsers } from "../../store/session";
 import "./SpotDetails.css";
 
+
 export default function SpotDetails() {
   const { spotId } = useParams();
   const dispatch = useDispatch();
@@ -17,9 +18,11 @@ export default function SpotDetails() {
   let reviews = Object.values(useSelector((state) => state.reviews));
   let allReviews = useSelector(selectAllReviews);
   const users = useSelector(selectAllUsers);
-  const spotImages = Object.values(useSelector((state) => state.spotImages));
+  // const spotImages = Object.values(useSelector((state) => state.spotImages));
+  const spotImages = useSelector(grabSpotImages);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isValidImage, setIsValidImages] = useState([]);
 
   if (reviews[0]?.spotId !== Number(spotId)) {
     reviews = [];
@@ -47,17 +50,30 @@ export default function SpotDetails() {
   }, [dispatch, spotId]);
 
   useEffect(() => {
-    if (
-      spot &&
-      spotImages.length === spot.SpotImages?.length &&
-      spotImages.every(
-        (image, index) => image.url === spot.SpotImages[index].url
-      )
-    ) {
-      setIsLoading(false);
+    if (spot && spotImages.length === spot.SpotImages?.length) {
+      const promises = spotImages.map(image => {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = function() {
+            resolve(true);
+          };
+          img.onerror = function() {
+            resolve(false);
+          };
+          img.src = image.url;
+        });
+      });
+      console.log(promises)
+
+      Promise.all(promises).then(results => {
+        setIsValidImages(results);
+        setIsLoading(false)
+      })
     }
   }, [spot, spotImages]);
 
+  
+  
   if (!spot) {
     return <h2>Loading...</h2>;
   }
@@ -65,8 +81,7 @@ export default function SpotDetails() {
   const { SpotImages, name, Owner, city, state, country, description, price } =
     spot;
 
-  console.log("CHECKING SPOT IMAGES FROM SPOT", SpotImages);
-  console.log("CHECKING SPOT IMAGES FROM STORE", spotImages);
+
 
   if (!Owner || !SpotImages) {
     return <h2>Loading...</h2>;
@@ -88,7 +103,6 @@ export default function SpotDetails() {
     return false;
   };
 
-  let counter = 0;
 
   return (
     <>
@@ -99,17 +113,18 @@ export default function SpotDetails() {
             {city}, {state}, {country}
           </h2>
           <div className="spot-images">
-            {spotImages?.map((image) => {
-              counter++;
-              return (
+          {isLoading ? (
+              <h2>Loading images...</h2>
+            ) : (
+              spotImages.map((image, index) => (
                 <img
-                  key={image.id}
-                  className={`pos${counter}`}
-                  src={image.url}
-                  alt={`${name}'s image`}
+                  key={index}
+                  className={`pos${index + 1}`}
+                  src={isValidImage[index] ? image.url : '/landing-pad-icon-black.png'}
+                  alt={isValidImage[index] ? `${name}'s image` : 'placeholder image'}
                 />
-              );
-            })}
+              ))
+            )}
           </div>
           <div className="spot-desc-and-rating">
             <div className="spot-host">

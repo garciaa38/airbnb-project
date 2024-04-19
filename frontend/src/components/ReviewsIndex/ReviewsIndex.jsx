@@ -16,8 +16,6 @@ export default function ReviewsIndex({
 }) {
   const reversedReviews = [...reviews].reverse();
 
-  console.log("CHECK review list", reversedReviews)
-  console.log("CHECK DISABLE REVIEW BUTTON", disableReviewButton)
 
   if (!disableReviewButton && reversedReviews.length <= 0) {
     return (
