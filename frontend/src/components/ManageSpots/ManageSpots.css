@@ -32,9 +32,8 @@
     display: flex;
     justify-content: start;
     width: 100%;
-    padding-left: 30px;
-    padding-top: 3px;
-    background-color: rgb(237, 240, 243);
+    /* padding-left: 30px; */
+    padding-top: 10px;
 }
 
 .update-btn {

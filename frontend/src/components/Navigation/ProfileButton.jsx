@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { FaUserCircle } from 'react-icons/fa';
+import { RxHamburgerMenu } from "react-icons/rx";
 import { Link } from 'react-router-dom';
 import * as sessionActions from '../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
@@ -45,7 +46,9 @@ function ProfileButton({ user, navigate }) {
 
   return (
     <>
-      <button onClick={toggleMenu}>
+      <button className="profile-icon" onClick={toggleMenu}>
+        <RxHamburgerMenu />
+        <div className="menu-sep"> | </div>
         <FaUserCircle />
       </button>
       <ul className={ulClassName} ref={ulRef}>

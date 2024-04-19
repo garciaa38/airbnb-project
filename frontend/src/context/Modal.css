@@ -50,6 +50,7 @@
   display: flex;
   flex-direction: column;
   width: 50%;
+  padding-bottom: 5px;
 }
 
 .password-login {
@@ -58,17 +59,60 @@
   width: 50%;
 }
 
+.login-submit {
+  width: 50%;
+}
+
+.login-submit button{
+  margin-top: 1.5%;
+  margin-bottom: 1.5%;
+  box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.4);
+  background-color: rgb(252, 98, 98);
+  color: white;
+  border: none;
+  transition: transform 0.1s;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.login-submit button:hover {
+  transform: translateY(1px);
+}
+
+.login-submit button:active {
+  transform: translateY(2px); 
+  box-shadow: none;
+}
+
+.login-demo-user {
+  background-color: white;
+  border: none;
+  margin-top: 10px;
+}
+
+.login-demo-user button{
+  background-color: none;
+  border: none;
+  text-decoration: underline;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  cursor: pointer;
+  background-color: white;
+}
+
 .sign-up-form {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 700px;
-  height: auto;
+  width: 500px;
+  height: auto; 
+  padding-bottom: 30px;
 }
 
 .sign-up-form form {
-  max-width: 700px;
+  max-width: 500px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -93,6 +137,7 @@
   display: flex;
   flex-direction: column;
   width: 50%;
+  padding: 5px 0
 }
 
 .sign-up-firstName {
@@ -105,6 +150,7 @@
   display: flex;
   flex-direction: column;
   width: 50%;
+  padding: 5px 0
 }
 
 .sign-up-password {
@@ -117,6 +163,31 @@
   display: flex;
   flex-direction: column;
   width: 50%;
+  padding: 5px 0
+}
+
+.sign-up-submit {
+  width: 50%;
+  height: 30px;
+}
+
+.sign-up-submit button {
+  box-shadow: 3px 3px 2px rgba(0, 0, 0, 0.4);
+  background-color: rgb(252, 98, 98);
+  color: white;
+  border: none;
+  transition: transform 0.1s;
+  width: 100%;
+  height: 30px;
+}
+
+.sign-up-submit:hover {
+  transform: translateY(1px);
+}
+
+.sign-up-submit:active {
+  transform: translateY(2px); 
+  box-shadow: none;
 }
 
 .review-form {
@@ -124,9 +195,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-width: 700px;
-  max-height: 500px;
-  width: 700px;
+  width: 550px;
   height: 500px;
 }
 
@@ -157,6 +226,8 @@
 
 .review-submit-button {
   padding-bottom: 15px;
+  width: 90%;
+  height: 10%;
 }
 
 .disabled-review, .submit-review {
@@ -169,6 +240,8 @@
   color: rgb(153, 149, 149);
   border: none;
   transition: transform 0.1s;
+  width: 100%;
+  height: 100%;
 }
 
 .submit-review {
@@ -177,6 +250,8 @@
   color: white;
   border: none;
   transition: transform 0.1s;
+  width: 100%;
+  height: 100%;
 }
 
 .submit-review:hover {
@@ -197,6 +272,11 @@
   height: auto;
 }
 
+.delete-form h3 {
+  width: 70%;
+  margin-bottom: 5%;
+}
+
 .delete-form form {
   max-width: 500px;
   width: 100%;
@@ -209,7 +289,7 @@
 .delete-spot-btn {
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 70%;
   margin-bottom: 10px;
 }
 
@@ -234,7 +314,7 @@
 .keep-spot-btn {
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 70%;
   margin-bottom: 10px;
 }
 

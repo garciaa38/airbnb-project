@@ -44,11 +44,12 @@ export default function ManageSpotsIndex() {
           <div className="spot-grid">
             {managedSpots.map((spot) => {
               return (
-                <>
+                <div className="spot-manage" key={spot.id}>
                   <div className="spot-tile" title={spot.name} key={spot.id}>
                     <Link to={`/spots/${spot.id}`}>
                       <SpotsIndexItem spot={spot} user={true} />
                     </Link>
+                  </div>
                     <div className="update-delete">
                       <Link
                         className="update-btn"
@@ -63,8 +64,7 @@ export default function ManageSpotsIndex() {
                         />
                       </div>
                     </div>
-                  </div>
-                </>
+                </div>
               );
             })}
           </div>
