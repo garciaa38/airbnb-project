@@ -20,15 +20,16 @@ export default function SpotDetails() {
   const users = useSelector(selectAllUsers);
   // const spotImages = Object.values(useSelector((state) => state.spotImages));
   const spotImages = useSelector(grabSpotImages);
-
+  
   const [isLoading, setIsLoading] = useState(true);
   const [isValidImage, setIsValidImages] = useState([]);
-
+  
   if (reviews[0]?.spotId !== Number(spotId)) {
     reviews = [];
     allReviews = [];
   }
-
+  
+  
   const numReviews = allReviews.length;
 
   const totalRating = allReviews.reduce(
@@ -102,7 +103,6 @@ export default function SpotDetails() {
 
     return false;
   };
-
 
   return (
     <>
