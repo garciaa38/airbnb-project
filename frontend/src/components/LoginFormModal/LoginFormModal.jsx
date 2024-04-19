@@ -39,8 +39,10 @@ function LoginFormModal({ navigate }) {
       .then(navigate("/"))
       .catch(async (res) => {
         const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
+        console.log(data.message)
+        if (data && data.message) {
+          setErrors(data);
+          console.log(errors)
         }
       });
   };
@@ -52,7 +54,7 @@ function LoginFormModal({ navigate }) {
         {errors.message && (
           <p className="errors">{`The provided credentials were invalid`}</p>
         )}
-        {errors.credential && <p>{errors.credential}</p>}
+        {/* {errors.credential && <p>{errors.credential}</p>} */}
       </div>
       <form onSubmit={handleSubmit} className="form">
         <div className="username-email-login">
