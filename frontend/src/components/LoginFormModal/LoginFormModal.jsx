@@ -21,8 +21,11 @@ function LoginFormModal({ navigate }) {
       navigate("/");
     } catch (err) {
       const data = await err.json();
+      console.log("1", data, data.errors)
       if (data && data.errors) {
+        console.log("2", data, data.errors)
         setErrors(data.errors);
+        console.log("3", data, data.errors, errors)
       }
     }
   };
