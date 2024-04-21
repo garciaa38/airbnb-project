@@ -119,13 +119,23 @@ function SignupFormModal({ navigate }) {
         <div className="sign-up-submit">
           <button
             type="submit"
+            className={
+              email.length <= 0 ||
+              username.length <= 3 ||
+              firstName.length <= 0 ||
+              lastName.length <= 0 ||
+              password.length <= 5 ||
+              confirmPassword.length <= 5
+                ? "disabled-signup"
+                : "submit-signup"
+            }
             disabled={
               email.length <= 0 ||
               username.length <= 3 ||
               firstName.length <= 0 ||
               lastName.length <= 0 ||
               password.length <= 5 ||
-              confirmPassword <= 5
+              confirmPassword.length <= 5
             }
           >
             Sign Up

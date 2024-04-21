@@ -25,10 +25,10 @@ function LoginFormModal({ navigate }) {
       .then(navigate("/"))
       .catch(async (res) => {
         const data = await res.json();
-        console.log(data.message)
+        console.log(data.message);
         if (data && data.message) {
           setErrors(data);
-          console.log(errors)
+          console.log(errors);
         }
       });
   };
@@ -63,6 +63,11 @@ function LoginFormModal({ navigate }) {
         </div>
         <div className="login-submit">
           <button
+            className={
+              credential.length < 4 || password.length < 6
+                ? "disabled-login"
+                : "submit-login"
+            }
             type="submit"
             disabled={credential.length < 4 || password.length < 6}
           >
