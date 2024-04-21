@@ -31,7 +31,7 @@ export default function ManageSpotsIndex() {
             <h1>Manage Spots</h1>
             <div className="make-more-spots">
               <Link className="make-more-spots-btn" to={`/spots/new`}>
-                Create a New spot
+                Create a New Spot
               </Link>
             </div>
             <h2>{`No spots yet. Why don't you change that today?`}</h2>

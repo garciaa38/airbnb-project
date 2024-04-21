@@ -127,6 +127,20 @@
     flex-direction: column;
 }
 
+.price-field {
+    display: flex;
+    align-items: center;
+}
+
+.price-field p {
+    width: 3%;
+}
+
+.price-field input {
+    width: 97%;
+    height: 60%;
+}
+
 .price input::-webkit-inner-spin-button,
 .price input::-webkit-out-spin-button {
     -webkit-appearance: none;

@@ -66,13 +66,13 @@ export default function SpotForm({ spot, formType }) {
     if (price === "") {
       errorHandle.price = "Price is required";
     } else if (isNaN(Number(price))) {
-      errorHandle.price = "Please include a valid price"
+      errorHandle.price = "Please include a valid price";
     } else if (Number(price) <= 0) {
-      errorHandle.price = "Price is required"
+      errorHandle.price = "Price is required";
     } else if (price.toString().split(".")[1]?.length > 2) {
       const fixedPrice = parseFloat(Number(price)).toFixed(2);
       setPrice(fixedPrice);
-    } 
+    }
 
     if (!spotImages["0"]?.url || spotImages["0"]?.tempId !== 0)
       errorHandle.previewImage = "Preview image is required";
@@ -152,7 +152,6 @@ export default function SpotForm({ spot, formType }) {
           dispatchedArr.push(dispatchedImg);
         } else {
           if (spotImgArr[i].url.length) {
-
             const dispatchedImg = {
               url: spotImgArr[i].url,
               preview: spotImgArr[i].preview,
@@ -170,10 +169,14 @@ export default function SpotForm({ spot, formType }) {
   return (
     <div className="form-container">
       <form onSubmit={handleSubmit}>
-        <h2>{formType === "Create Spot" ? "Create a New Spot" : "Update your Spot"}</h2>
+        <h2>
+          {formType === "Create Spot"
+            ? "Create a New Spot"
+            : "Update your Spot"}
+        </h2>
         <div className="location-form">
-            <h3>{`Where's your place located?`}</h3>
-            <p>{`Guests will only get your exact address once they booked a reservation.`}</p>
+          <h3>{`Where's your place located?`}</h3>
+          <p>{`Guests will only get your exact address once they booked a reservation.`}</p>
           <div className="country">
             <label>Country</label>
             <input
@@ -246,9 +249,11 @@ export default function SpotForm({ spot, formType }) {
           </div>
         </div>
         <div className="description-form">
-            <h3>Describe your place to guests</h3>
-            <p>Mention the best features of your space, any special amenities 
-                like fast wifi or parking, and what you love about the neighborhood.</p>
+          <h3>Describe your place to guests</h3>
+          <p>
+            Mention the best features of your space, any special amenities like
+            fast wifi or parking, and what you love about the neighborhood.
+          </p>
           <div className="description">
             <textarea
               value={description}
@@ -259,8 +264,8 @@ export default function SpotForm({ spot, formType }) {
           <div className="errors">{errors.description}</div>
         </div>
         <div className="name-form">
-            <h3>Create a title for your spot</h3>
-            <p>{`Catch guests' attention with a spot title that highlights what makes your place special.`}</p>
+          <h3>Create a title for your spot</h3>
+          <p>{`Catch guests' attention with a spot title that highlights what makes your place special.`}</p>
           <div className="name">
             <input
               type="text"
@@ -272,21 +277,27 @@ export default function SpotForm({ spot, formType }) {
           <div className="errors">{errors.name}</div>
         </div>
         <div className="price-form">
-            <h3>Set a base price for your spot</h3>
-            <p>Competitive pricing can help your listing stand out and rank higher in search results.</p>
+          <h3>Set a base price for your spot</h3>
+          <p>
+            Competitive pricing can help your listing stand out and rank higher
+            in search results.
+          </p>
           <div className="price">
-            <input
-              type="number"
-              placeholder="Price per night (USD)"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-            />
+            <div className="price-field">
+              <p>$</p>
+              <input
+                type="number"
+                placeholder="Price per night (USD)"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+            </div>
           </div>
           <div className="errors">{errors.price}</div>
         </div>
         <div className="photo-form">
-            <h3>Liven up your spot with photos</h3>
-            <p>Submit a link to at least one photo to publish your spot.</p>
+          <h3>Liven up your spot with photos</h3>
+          <p>Submit a link to at least one photo to publish your spot.</p>
           <div className="photos">
             <label>Photos</label>
             <input
@@ -374,7 +385,9 @@ export default function SpotForm({ spot, formType }) {
           </div>
         </div>
         <div className="form-submit">
-          <button type="submit">{formType === "Create Spot" ? "Create Spot" : "Update your Spot"}</button>
+          <button type="submit">
+            {formType === "Create Spot" ? "Create Spot" : "Update your Spot"}
+          </button>
         </div>
       </form>
     </div>
