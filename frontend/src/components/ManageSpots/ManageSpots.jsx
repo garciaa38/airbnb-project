@@ -27,18 +27,26 @@ export default function ManageSpotsIndex() {
     if (managedSpots.length <= 0) {
       return (
         <div className="manage-spots-index">
-          <h1>Manage Your Spots</h1>
-          <Link to={`/spots/new`}>Create a New spot</Link>
-          <h2>{`No spots yet. Why don't you change that today?`}</h2>
+          <div className="manage-header">
+            <h1>Manage Spots</h1>
+            <div className="make-more-spots">
+              <Link className="make-more-spots-btn" to={`/spots/new`}>
+                Create a New spot
+              </Link>
+            </div>
+            <h2>{`No spots yet. Why don't you change that today?`}</h2>
+          </div>
         </div>
       );
     } else {
       return (
         <div className="manage-spots-index">
           <div className="manage-header">
-            <h1>Manage Your Spots</h1>
+            <h1>Manage Spots</h1>
             <div className="make-more-spots">
-              <Link className="make-more-spots-btn" to={`/spots/new`}>Create a New Spot</Link>
+              <Link className="make-more-spots-btn" to={`/spots/new`}>
+                Create a New Spot
+              </Link>
             </div>
           </div>
           <div className="spot-grid">
@@ -50,20 +58,17 @@ export default function ManageSpotsIndex() {
                       <SpotsIndexItem spot={spot} user={true} />
                     </Link>
                   </div>
-                    <div className="update-delete">
-                      <Link
-                        className="update-btn"
-                        to={`/spots/${spot.id}/edit`}
-                      >
-                        Update
-                      </Link>
-                      <div className="delete-btn">
-                        <OpenModalMenuItem
-                          itemText="Delete"
-                          modalComponent={<DeleteSpotModal spotId={spot.id} />}
-                        />
-                      </div>
+                  <div className="update-delete">
+                    <Link className="update-btn" to={`/spots/${spot.id}/edit`}>
+                      Update
+                    </Link>
+                    <div className="delete-btn">
+                      <OpenModalMenuItem
+                        itemText="Delete"
+                        modalComponent={<DeleteSpotModal spotId={spot.id} />}
+                      />
                     </div>
+                  </div>
                 </div>
               );
             })}
