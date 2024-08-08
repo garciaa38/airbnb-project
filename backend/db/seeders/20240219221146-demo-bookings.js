@@ -14,62 +14,62 @@ module.exports = {
       {
         userId: 2,
         spotId: 1,
-        startDate: '2024-05-04',
-        endDate: '2024-05-08'
+        startDate: '2034-05-04',
+        endDate: '2034-05-08'
       },
       {
         userId: 3,
         spotId: 1,
-        startDate: '2024-05-09',
-        endDate: '2024-05-12'
+        startDate: '2034-05-09',
+        endDate: '2034-05-12'
       },
       {
         userId: 4,
         spotId: 2,
-        startDate: '2024-05-04',
-        endDate: '2024-05-08'
+        startDate: '2034-05-04',
+        endDate: '2034-05-08'
       },
       {
         userId: 5,
         spotId: 2,
-        startDate: '2024-05-09',
-        endDate: '2024-05-12'
+        startDate: '2034-05-09',
+        endDate: '2034-05-12'
       },
       {
         userId: 6,
         spotId: 3,
-        startDate: '2024-05-04',
-        endDate: '2024-05-08'
+        startDate: '2034-05-04',
+        endDate: '2034-05-08'
       },
       {
         userId: 7,
         spotId: 3,
-        startDate: '2024-05-09',
-        endDate: '2024-05-12'
+        startDate: '2034-05-09',
+        endDate: '2034-05-12'
       },
       {
         userId: 8,
         spotId: 4,
-        startDate: '2024-05-04',
-        endDate: '2024-05-08'
+        startDate: '2034-05-04',
+        endDate: '2034-05-08'
       },
       {
         userId: 9,
         spotId: 4,
-        startDate: '2024-05-09',
-        endDate: '2024-05-12'
+        startDate: '2034-05-09',
+        endDate: '2034-05-12'
       },
       {
         userId: 10,
         spotId: 5,
-        startDate: '2024-05-04',
-        endDate: '2024-05-08'
+        startDate: '2034-05-04',
+        endDate: '2034-05-08'
       },
       {
         userId: 1,
         spotId: 5,
-        startDate: '2024-05-09',
-        endDate: '2024-05-12'
+        startDate: '2034-05-09',
+        endDate: '2034-05-12'
       },
     ], { validate: true });
   },
